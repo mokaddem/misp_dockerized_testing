@@ -144,6 +144,8 @@ class MISPInstance():
             server = self.site_admin_connector.import_server(server_sync_config)
         server.pull = True
         server.push = False
+        server.push_galaxy_clusters = True
+        server.pull_galaxy_clusters = True
         server = self.site_admin_connector.update_server(server)
         r = self.site_admin_connector.test_server(server)
         if r['status'] != 1:
