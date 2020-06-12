@@ -77,7 +77,7 @@ class TestClusterSync(unittest.TestCase):
         try:
             misp_central = self.misp_instances.central_node
             imported_clusters = self.get_clusters(misp_central.org_admin_connector)
-            self.compare_cluster_with_disk(imported_clusters)
+            self.compare_cluster_with_disk(imported_clusters, mirrorCheck=True)
         finally:
             pass
 
@@ -194,23 +194,58 @@ class TestClusterSync(unittest.TestCase):
                 self.lotr_test_cluster = json.load(f)
         return self.lotr_test_cluster
 
-    def compare_cluster_with_disk(self, clusters):
+    def compare_cluster_with_disk(self, clusters, mirrorCheck=False):
         base_clusters = self.get_lotr_clusters_from_disk()
         clusters_arranged = {}
         for cluster in clusters:
             clusters_arranged[cluster['GalaxyCluster']['uuid']] = cluster
         for base_cluster in base_clusters:
             cluster = clusters_arranged[base_cluster['GalaxyCluster']['uuid']]
-            # FIXME: Fix it in backend
             if 'GalaxyElement' in cluster:
                 cluster['GalaxyCluster']['GalaxyElement'] = cluster['GalaxyElement']
             if 'GalaxyClusterRelation' in cluster:
                 cluster['GalaxyCluster']['GalaxyClusterRelation'] = cluster['GalaxyClusterRelation']
-            self.compare_cluster(base_cluster, cluster)
+            self.compare_cluster(base_cluster, cluster, mirrorCheck=mirrorCheck)
 
 
-    def compare_cluster(self, cluster1, cluster2):
-        self.assertEqual(cluster1['GalaxyCluster']['uuid'], cluster2['GalaxyCluster']['uuid'])
-        self.assertEqual(cluster1['GalaxyCluster']['version'], cluster2['GalaxyCluster']['version'])
+    def compare_cluster(self, cluster1, cluster2, mirrorCheck=False):
+        to_check_cluster = ['uuid', 'version', 'value', 'tag_name', 'extends_uuid', 'extends_version']
+        to_check_element = ['key', 'value']
+        to_check_relation = ['referenced_galaxy_cluster_uuid', 'referenced_galaxy_cluster_type', 'galaxy_cluster_uuid', 'default']
+        if mirrorCheck:
+                to_check_relation.append('distribution')
+        to_check_tag = ['name']
+
+        for k in to_check_cluster:
+            self.assertEqual(cluster1['GalaxyCluster'][k], cluster2['GalaxyCluster'][k])
+
         self.assertEqual(len(cluster1['GalaxyCluster']['GalaxyElement']), len(cluster2['GalaxyCluster']['GalaxyElement']))
+        toCheckElement1 = [ self.extract_useful_fields(e, to_check_element) for e in cluster1['GalaxyCluster']['GalaxyElement']]
+        toCheckElement2 = [ self.extract_useful_fields(e, to_check_element) for e in cluster2['GalaxyCluster']['GalaxyElement']]
+        for elem1 in toCheckElement1:
+            self.assertIn(elem1, toCheckElement2)
+                
         self.assertEqual(len(cluster1['GalaxyCluster']['GalaxyClusterRelation']), len(cluster2['GalaxyCluster']['GalaxyClusterRelation']))
+        for rel1 in cluster1['GalaxyCluster']['GalaxyClusterRelation']:
+            found = False
+            for rel2 in cluster2['GalaxyCluster']['GalaxyClusterRelation']:
+                if (
+                    rel1['galaxy_cluster_uuid'] == rel2['galaxy_cluster_uuid'] and 
+                    rel1['referenced_galaxy_cluster_uuid'] == rel2['referenced_galaxy_cluster_uuid'] and 
+                    rel1['referenced_galaxy_cluster_type'] == rel2['referenced_galaxy_cluster_type']
+                ):
+                    found = True
+                    for k in to_check_relation:
+                        self.assertEqual(rel1[k], rel2[k])
+                    
+                    if 'Tag' in rel1:
+                        toCheckTag1 = [ self.extract_useful_fields(t, to_check_tag) for t in rel1['Tag']]
+                        toCheckTag2 = [ self.extract_useful_fields(t, to_check_tag) for t in rel2['Tag']]
+                        for tag1 in toCheckTag1:
+                            self.assertIn(tag1, toCheckTag2)
+                    break
+            self.assertTrue(found)
+
+    def extract_useful_fields(self, orig_dict, keys_to_extract):
+        return { key: orig_dict[key] for key in keys_to_extract }
+
