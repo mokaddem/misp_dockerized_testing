@@ -67,8 +67,42 @@ class TestClusterSync(unittest.TestCase):
             misp1.site_admin_connector.server_pull(misp1.synchronisations[misp_central.name])
             time.sleep(15)
             pulled_clusters = self.get_clusters(misp1.org_admin_connector)
-            self.compare_cluster_with_disk(pulled_clusters)
+            self.compare_cluster_with_disk(pulled_clusters, mirrorCheck=False)
+            pulledClustersByUUID = { cluster['GalaxyCluster']['uuid']: cluster for cluster in pulled_clusters }
+
+            # Check that distribution has been adpated accordingly
+            lotr_test_cluster = self.get_lotr_clusters_from_disk()
+            for cluster in lotr_test_cluster:
+                pulled_cluster = pulledClustersByUUID.get(cluster['GalaxyCluster']['uuid'], False)
+                if cluster['GalaxyCluster']['distribution'] == '0':
+                    self.assertIs(pulled_cluster, False) # your organisation only should not be pulled
+                if cluster['GalaxyCluster']['distribution'] == '1':
+                    self.assertEqual(pulled_cluster['GalaxyCluster']['distribution'], '0')
+                if cluster['GalaxyCluster']['distribution'] == '2':
+                    self.assertEqual(pulled_cluster['GalaxyCluster']['distribution'], '1')
+                if cluster['GalaxyCluster']['distribution'] == '4':
+                    pass
+
+            # Check for Orgc
+            for cluster in lotr_test_cluster:
+                pulled_cluster = pulledClustersByUUID.get(cluster['GalaxyCluster']['uuid'], False)
+                if pulled_cluster is not False:
+                    self.assertEqual(cluster['GalaxyCluster']['Orgc']['uuid'], cluster['GalaxyCluster']['Orgc']['uuid'])
+                    for relation in cluster['GalaxyCluster']['GalaxyClusterRelation']:
+                        pulled_relation = self.find_relation_in_cluster(relation, pulled_cluster['GalaxyCluster']['GalaxyClusterRelation'])
+                        if relation['distribution'] == '0':
+                            self.assertIs(pulled_relation, False) # your organisation only should not be pulled
+                        if relation['distribution'] == '1':
+                            self.assertEqual(pulled_relation['distribution'], '0')
+                        if relation['distribution'] == '2':
+                            self.assertEqual(pulled_relation['distribution'], '1')
+                        if relation['distribution'] == '4':
+                            pass
+                else:
+                    self.assertEqual(cluster['GalaxyCluster']['distribution'], '0')
+
         finally:
+            # pass
             self.delete_lotr_clusters(misp1.site_admin_connector)
 
     @setup_cluster_env
@@ -94,7 +128,7 @@ class TestClusterSync(unittest.TestCase):
             uuid = lotr_test_cluster['GalaxyCluster']['uuid']
             addedCluster = self.get_cluster(misp_central.org_admin_connector, uuid)
             self.assertEqual(addedCluster['GalaxyCluster']['uuid'], uuid)
-            self.compare_cluster(lotr_test_cluster, addedCluster)
+            self.compare_cluster(lotr_test_cluster, addedCluster, mirrorCheck=True)
         finally:
             pass
 
@@ -111,7 +145,7 @@ class TestClusterSync(unittest.TestCase):
             uuid = lotr_test_cluster['GalaxyCluster']['uuid']
             addedCluster = self.get_cluster(misp_central.org_admin_connector, uuid)
             self.assertEqual(addedCluster['GalaxyCluster']['uuid'], uuid)
-            self.compare_cluster(lotr_test_cluster, addedCluster)
+            self.compare_cluster(lotr_test_cluster, addedCluster, mirrorCheck=True)
 
             addedCluster['GalaxyCluster']['description'] = 'baz'
             addedCluster['GalaxyCluster']['distribution'] = 0
@@ -168,7 +202,6 @@ class TestClusterSync(unittest.TestCase):
 
     def get_clusters(self, instance):
         filters = {
-            "returnFormat": "json",
             "galaxy_uuid": [
                 "93d4d641-a905-458a-83b4-18677a4ea534",
                 "fe1c605e-a8ca-47c9-83bf-a715ce6042dc",
@@ -196,11 +229,14 @@ class TestClusterSync(unittest.TestCase):
 
     def compare_cluster_with_disk(self, clusters, mirrorCheck=False):
         base_clusters = self.get_lotr_clusters_from_disk()
-        clusters_arranged = {}
-        for cluster in clusters:
-            clusters_arranged[cluster['GalaxyCluster']['uuid']] = cluster
+        clusters_by_uuid = { cluster['GalaxyCluster']['uuid']: cluster for cluster in clusters }
         for base_cluster in base_clusters:
-            cluster = clusters_arranged[base_cluster['GalaxyCluster']['uuid']]
+            cluster = clusters_by_uuid.get(base_cluster['GalaxyCluster']['uuid'], False)
+            if mirrorCheck:
+                self.assertIsNot(cluster, False)
+            elif cluster is False:
+                continue
+
             if 'GalaxyElement' in cluster:
                 cluster['GalaxyCluster']['GalaxyElement'] = cluster['GalaxyElement']
             if 'GalaxyClusterRelation' in cluster:
@@ -209,9 +245,9 @@ class TestClusterSync(unittest.TestCase):
 
 
     def compare_cluster(self, cluster1, cluster2, mirrorCheck=False):
-        to_check_cluster = ['uuid', 'version', 'value', 'tag_name', 'extends_uuid', 'extends_version']
+        to_check_cluster = ['uuid', 'version', 'value', 'type', 'extends_uuid', 'extends_version']
         to_check_element = ['key', 'value']
-        to_check_relation = ['referenced_galaxy_cluster_uuid', 'referenced_galaxy_cluster_type', 'galaxy_cluster_uuid', 'default']
+        to_check_relation = ['referenced_galaxy_cluster_uuid', 'referenced_galaxy_cluster_type', 'default']
         if mirrorCheck:
                 to_check_relation.append('distribution')
         to_check_tag = ['name']
@@ -224,28 +260,35 @@ class TestClusterSync(unittest.TestCase):
         toCheckElement2 = [ self.extract_useful_fields(e, to_check_element) for e in cluster2['GalaxyCluster']['GalaxyElement']]
         for elem1 in toCheckElement1:
             self.assertIn(elem1, toCheckElement2)
-                
-        self.assertEqual(len(cluster1['GalaxyCluster']['GalaxyClusterRelation']), len(cluster2['GalaxyCluster']['GalaxyClusterRelation']))
+
+        if mirrorCheck: # distribution may affect the number of relations
+            self.assertEqual(len(cluster1['GalaxyCluster']['GalaxyClusterRelation']), len(cluster2['GalaxyCluster']['GalaxyClusterRelation']))
         for rel1 in cluster1['GalaxyCluster']['GalaxyClusterRelation']:
-            found = False
-            for rel2 in cluster2['GalaxyCluster']['GalaxyClusterRelation']:
-                if (
-                    rel1['galaxy_cluster_uuid'] == rel2['galaxy_cluster_uuid'] and 
-                    rel1['referenced_galaxy_cluster_uuid'] == rel2['referenced_galaxy_cluster_uuid'] and 
-                    rel1['referenced_galaxy_cluster_type'] == rel2['referenced_galaxy_cluster_type']
-                ):
-                    found = True
-                    for k in to_check_relation:
-                        self.assertEqual(rel1[k], rel2[k])
-                    
-                    if 'Tag' in rel1:
-                        toCheckTag1 = [ self.extract_useful_fields(t, to_check_tag) for t in rel1['Tag']]
-                        toCheckTag2 = [ self.extract_useful_fields(t, to_check_tag) for t in rel2['Tag']]
-                        for tag1 in toCheckTag1:
-                            self.assertIn(tag1, toCheckTag2)
-                    break
-            self.assertTrue(found)
+            rel2 = self.find_relation_in_cluster(rel1, cluster2['GalaxyCluster']['GalaxyClusterRelation'])
+            if rel1['distribution'] == '0':
+                self.assertIs(rel2, False)
+                continue
+            else:
+                self.assertIsNot(rel2, False)
+
+            for k in to_check_relation:
+                self.assertEqual(rel1[k], rel2[k])
+                
+            if 'Tag' in rel1:
+                toCheckTag1 = [ self.extract_useful_fields(t, to_check_tag) for t in rel1['Tag']]
+                toCheckTag2 = [ self.extract_useful_fields(t, to_check_tag) for t in rel2['Tag']]
+                for tag1 in toCheckTag1:
+                    self.assertIn(tag1, toCheckTag2)
 
     def extract_useful_fields(self, orig_dict, keys_to_extract):
         return { key: orig_dict[key] for key in keys_to_extract }
+
+    def find_relation_in_cluster(self, relation, relations):
+        for rel in relations:
+            if (
+                rel['referenced_galaxy_cluster_uuid'] == relation['referenced_galaxy_cluster_uuid'] and 
+                rel['referenced_galaxy_cluster_type'] == relation['referenced_galaxy_cluster_type']
+            ):
+                return rel
+        return False
 
