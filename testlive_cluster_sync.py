@@ -67,7 +67,7 @@ class TestClusterSync(unittest.TestCase):
             misp1.site_admin_connector.server_pull(misp1.synchronisations[misp_central.name])
             time.sleep(15)
             pulled_clusters = self.get_clusters(misp1.org_admin_connector)
-            self.compare_cluster_with_disk(pulled_clusters, mirrorCheck=False)
+            self.compare_cluster_with_disk(pulled_clusters, mirrorCheck=False, fromPull=True)
             pulledClustersByUUID = { cluster['GalaxyCluster']['uuid']: cluster for cluster in pulled_clusters }
 
             # Check that distribution has been adpated accordingly
@@ -212,6 +212,14 @@ class TestClusterSync(unittest.TestCase):
         finally:
             pass
 
+    # @setup_cluster_env
+    # def test_add_cluster_relation(self):
+    #     pass
+
+    # @setup_cluster_env
+    # def test_edit_cluster_relation(self):
+    #     pass
+
     def import_lotr_galaxies(self, instance):
         lotr_clusters = self.get_lotr_clusters_from_disk()
         relative_path = 'galaxies/import'
@@ -252,7 +260,7 @@ class TestClusterSync(unittest.TestCase):
                 self.lotr_test_cluster = json.load(f)
         return self.lotr_test_cluster
 
-    def compare_cluster_with_disk(self, clusters, mirrorCheck=False):
+    def compare_cluster_with_disk(self, clusters, mirrorCheck=False, fromPull=False):
         base_clusters = self.get_lotr_clusters_from_disk()
         clusters_by_uuid = { cluster['GalaxyCluster']['uuid']: cluster for cluster in clusters }
         for base_cluster in base_clusters:
@@ -266,10 +274,10 @@ class TestClusterSync(unittest.TestCase):
                 cluster['GalaxyCluster']['GalaxyElement'] = cluster['GalaxyElement']
             if 'GalaxyClusterRelation' in cluster:
                 cluster['GalaxyCluster']['GalaxyClusterRelation'] = cluster['GalaxyClusterRelation']
-            self.compare_cluster(base_cluster, cluster, mirrorCheck=mirrorCheck)
+            self.compare_cluster(base_cluster, cluster, mirrorCheck=mirrorCheck, fromPull=fromPull)
 
 
-    def compare_cluster(self, cluster1, cluster2, mirrorCheck=False):
+    def compare_cluster(self, cluster1, cluster2, mirrorCheck=False, fromPull=False):
         to_check_cluster = ['uuid', 'version', 'value', 'type', 'extends_uuid', 'extends_version']
         to_check_element = ['key', 'value']
         to_check_relation = ['referenced_galaxy_cluster_uuid', 'referenced_galaxy_cluster_type', 'default']
@@ -290,7 +298,7 @@ class TestClusterSync(unittest.TestCase):
             self.assertEqual(len(cluster1['GalaxyCluster']['GalaxyClusterRelation']), len(cluster2['GalaxyCluster']['GalaxyClusterRelation']))
         for rel1 in cluster1['GalaxyCluster']['GalaxyClusterRelation']:
             rel2 = self.find_relation_in_cluster(rel1, cluster2['GalaxyCluster']['GalaxyClusterRelation'])
-            if rel1['distribution'] == '0':
+            if rel1['distribution'] == '0' and fromPull:
                 self.assertIs(rel2, False)
                 continue
             else:
