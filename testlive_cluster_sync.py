@@ -187,6 +187,31 @@ class TestClusterSync(unittest.TestCase):
         finally:
             pass
 
+    @setup_cluster_env
+    def test_restsearch_cluster(self):
+        '''Test galaxy_cluster restSearch'''
+        try:
+            misp_central = self.misp_instances.central_node
+            lotr_test_cluster = self.get_test_cluster_from_disk()
+            galaxy_uuid = lotr_test_cluster['GalaxyCluster']['Galaxy']['uuid']
+            relative_path = f'/galaxy_clusters/add/{galaxy_uuid}'
+            misp_central.org_admin_connector.direct_call(relative_path, data=lotr_test_cluster)
+            cluster_uuid = lotr_test_cluster['GalaxyCluster']['uuid']
+            added_cluster = self.get_cluster(misp_central.org_admin_connector, cluster_uuid)
+            self.assertEqual(added_cluster['GalaxyCluster']['uuid'], cluster_uuid)
+            tag_name = added_cluster['GalaxyCluster']['tag_name']
+
+            filters = {
+                "tag_name": tag_name
+            }
+            relative_path = 'galaxy_clusters/restSearch'
+            clusterFromRestSearch = misp_central.org_admin_connector.direct_call(relative_path, data=filters)
+            self.assertEqual(len(clusterFromRestSearch), 1)
+            clusterFromRestSearch = clusterFromRestSearch[0]
+            self.compare_cluster(added_cluster, clusterFromRestSearch, mirrorCheck=True)
+        finally:
+            pass
+
     def import_lotr_galaxies(self, instance):
         lotr_clusters = self.get_lotr_clusters_from_disk()
         relative_path = 'galaxies/import'
@@ -273,7 +298,7 @@ class TestClusterSync(unittest.TestCase):
 
             for k in to_check_relation:
                 self.assertEqual(rel1[k], rel2[k])
-                
+
             if 'Tag' in rel1:
                 toCheckTag1 = [ self.extract_useful_fields(t, to_check_tag) for t in rel1['Tag']]
                 toCheckTag2 = [ self.extract_useful_fields(t, to_check_tag) for t in rel2['Tag']]
