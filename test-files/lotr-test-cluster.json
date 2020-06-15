@@ -1,0 +1,56 @@
+{
+    "GalaxyCluster": {
+        "collection_uuid": "",
+        "type": "fellowship-characters",
+        "value": "foo",
+        "description": "bar",
+        "source": "baz",
+        "authors": null,
+        "version": "1591688315",
+        "distribution": "3",
+        "sharing_group_id": null,
+        "org_id": "1",
+        "orgc_id": "1",
+        "default": false,
+        "locked": false,
+        "extends_uuid": "",
+        "extends_version": null,
+        "uuid": "92730146-7e4d-4e0a-941e-ecb25c1d0fe1",
+        "Galaxy": {
+            "id": "4",
+            "uuid": "93d4d641-a905-458a-83b4-18677a4ea534",
+            "name": "Fellowship characters",
+            "type": "fellowship-characters",
+            "description": "The fellowship characters from The Lord of the Rings",
+            "version": "1",
+            "icon": "user-friends",
+            "namespace": "LoTR"
+        },
+        "GalaxyElement": [
+            {
+                "id": "189",
+                "galaxy_cluster_id": "67",
+                "key": "weapon",
+                "value": "weaponTest"
+            },
+            {
+                "id": "190",
+                "galaxy_cluster_id": "67",
+                "key": "race",
+                "value": "humanTest"
+            }
+        ],
+        "GalaxyClusterRelation": [
+            {
+                "id": "1109",
+                "referenced_galaxy_cluster_uuid": "ec0048f2-a7b2-4a71-83de-6e8fe4fef252",
+                "referenced_galaxy_cluster_type": "relation",
+                "referenced_galaxy_cluster_value": "",
+                "distribution": "3",
+                "sharing_group_id": null,
+                "default": false,
+                "GalaxyClusterRelationTag": ["tag_test"]
+            }
+        ]
+    }
+}

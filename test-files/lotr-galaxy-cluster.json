@@ -1,0 +1,3042 @@
+[
+    {
+        "GalaxyCluster": {
+            "uuid": "f2668718-9797-4524-8509-6dccf56c4866",
+            "collection_uuid": "",
+            "type": "fellowship-characters",
+            "value": "Frodo Baggins",
+            "tag_name": "misp-galaxy:fellowship-characters=\"f2668718-9797-4524-8509-6dccf56c4866\"",
+            "description": "The Frodo Baggins character",
+            "source": "",
+            "authors": [
+                "null"
+            ],
+            "version": "1591342400",
+            "distribution": "3",
+            "sharing_group_id": null,
+            "org_id": "1",
+            "orgc_id": "1",
+            "default": false,
+            "locked": false,
+            "extends_uuid": "",
+            "extends_version": "0",
+            "Galaxy": {
+                "uuid": "93d4d641-a905-458a-83b4-18677a4ea534",
+                "name": "Fellowship characters",
+                "type": "fellowship-characters",
+                "description": "The fellowship characters from The Lord of the Rings",
+                "version": "1",
+                "icon": "user-friends",
+                "namespace": "LoTR"
+            },
+            "GalaxyElement": [
+                {
+                    "key": "race",
+                    "value": "Hobbit"
+                },
+                {
+                    "key": "weapon",
+                    "value": "Dagger"
+                },
+                {
+                    "key": "synonyms",
+                    "value": "Mr. Underhill"
+                }
+            ],
+            "GalaxyClusterRelation": [
+                {
+                    "referenced_galaxy_cluster_uuid": "88179640-b9d0-4e2a-86aa-76f4923b4842",
+                    "referenced_galaxy_cluster_type": "home-location",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "0",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "f2668718-9797-4524-8509-6dccf56c4866",
+                    "GalaxyClusterRelationTag": []
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda1083-1900-4a9e-b7bd-47c40a00020f",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "f2668718-9797-4524-8509-6dccf56c4866",
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                }
+            ],
+            "Org": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "Orgc": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "TargettingClusterRelation": []
+        }
+    },
+    {
+        "GalaxyCluster": {
+            "uuid": "5ed9f752-6fa8-4787-b663-091b0a00020f",
+            "collection_uuid": "",
+            "type": "fellowship-characters",
+            "value": "Samwise Gamgee",
+            "tag_name": "misp-galaxy:fellowship-characters=\"5ed9f752-6fa8-4787-b663-091b0a00020f\"",
+            "description": "The Samwise Gamgee character",
+            "source": "",
+            "authors": [
+                "null"
+            ],
+            "version": "1591345564",
+            "distribution": "3",
+            "sharing_group_id": null,
+            "org_id": "1",
+            "orgc_id": "1",
+            "default": false,
+            "locked": false,
+            "extends_uuid": "",
+            "extends_version": "0",
+            "Galaxy": {
+                "uuid": "93d4d641-a905-458a-83b4-18677a4ea534",
+                "name": "Fellowship characters",
+                "type": "fellowship-characters",
+                "description": "The fellowship characters from The Lord of the Rings",
+                "version": "1",
+                "icon": "user-friends",
+                "namespace": "LoTR"
+            },
+            "GalaxyElement": [
+                {
+                    "key": "race",
+                    "value": "Hobbit"
+                },
+                {
+                    "key": "weapon",
+                    "value": "Dagger"
+                },
+                {
+                    "key": "synonyms",
+                    "value": "Banaz\u00eer Galbasi"
+                },
+                {
+                    "key": "synonyms",
+                    "value": "Sam"
+                }
+            ],
+            "GalaxyClusterRelation": [
+                {
+                    "referenced_galaxy_cluster_uuid": "88179640-b9d0-4e2a-86aa-76f4923b4842",
+                    "referenced_galaxy_cluster_type": "home-location",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5ed9f752-6fa8-4787-b663-091b0a00020f",
+                    "GalaxyClusterRelationTag": []
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda1083-1900-4a9e-b7bd-47c40a00020f",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5ed9f752-6fa8-4787-b663-091b0a00020f",
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "49a8ad1c-07b9-4df9-9859-d365b8e3c634",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5ed9f752-6fa8-4787-b663-091b0a00020f",
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda10a0-b2f0-45e3-8f25-49f60a00020f",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5ed9f752-6fa8-4787-b663-091b0a00020f",
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"very-unlikely\"",
+                            "colour": "#000f5c",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "5"
+                        }
+                    ]
+                }
+            ],
+            "Org": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "Orgc": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "TargettingClusterRelation": []
+        }
+    },
+    {
+        "GalaxyCluster": {
+            "uuid": "5ed9f928-aafc-44b8-a4bd-340e0a00020f",
+            "collection_uuid": "",
+            "type": "fellowship-characters",
+            "value": "Meriadoc \"Merry\" Brandybuck",
+            "tag_name": "misp-galaxy:fellowship-characters=\"5ed9f928-aafc-44b8-a4bd-340e0a00020f\"",
+            "description": "The Meriadoc \"Merry\" Brandybuck character",
+            "source": "",
+            "authors": [
+                "null"
+            ],
+            "version": "1591345585",
+            "distribution": "3",
+            "sharing_group_id": null,
+            "org_id": "1",
+            "orgc_id": "1",
+            "default": false,
+            "locked": false,
+            "extends_uuid": "",
+            "extends_version": "0",
+            "Galaxy": {
+                "uuid": "93d4d641-a905-458a-83b4-18677a4ea534",
+                "name": "Fellowship characters",
+                "type": "fellowship-characters",
+                "description": "The fellowship characters from The Lord of the Rings",
+                "version": "1",
+                "icon": "user-friends",
+                "namespace": "LoTR"
+            },
+            "GalaxyElement": [
+                {
+                    "key": "race",
+                    "value": "Hobbit"
+                },
+                {
+                    "key": "weapon",
+                    "value": "Dagger"
+                },
+                {
+                    "key": "synonyms",
+                    "value": "Master of Buckland"
+                },
+                {
+                    "key": "synonyms",
+                    "value": "Merry"
+                }
+            ],
+            "GalaxyClusterRelation": [
+                {
+                    "referenced_galaxy_cluster_uuid": "88179640-b9d0-4e2a-86aa-76f4923b4842",
+                    "referenced_galaxy_cluster_type": "home-location",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5ed9f928-aafc-44b8-a4bd-340e0a00020f",
+                    "GalaxyClusterRelationTag": []
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda1083-1900-4a9e-b7bd-47c40a00020f",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5ed9f928-aafc-44b8-a4bd-340e0a00020f",
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "49a8ad1c-07b9-4df9-9859-d365b8e3c634",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5ed9f928-aafc-44b8-a4bd-340e0a00020f",
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                }
+            ],
+            "Org": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "Orgc": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "TargettingClusterRelation": []
+        }
+    },
+    {
+        "GalaxyCluster": {
+            "uuid": "5ed9fc93-e234-42c0-8d2d-334f0a00020f",
+            "collection_uuid": "",
+            "type": "fellowship-characters",
+            "value": "Peregrin \"Pippin\" Took",
+            "tag_name": "misp-galaxy:fellowship-characters=\"5ed9fc93-e234-42c0-8d2d-334f0a00020f\"",
+            "description": "The Peregrin \"Pippin\" Took character",
+            "source": "",
+            "authors": [
+                "null"
+            ],
+            "version": "1591345604",
+            "distribution": "3",
+            "sharing_group_id": null,
+            "org_id": "1",
+            "orgc_id": "1",
+            "default": false,
+            "locked": false,
+            "extends_uuid": "",
+            "extends_version": "0",
+            "Galaxy": {
+                "uuid": "93d4d641-a905-458a-83b4-18677a4ea534",
+                "name": "Fellowship characters",
+                "type": "fellowship-characters",
+                "description": "The fellowship characters from The Lord of the Rings",
+                "version": "1",
+                "icon": "user-friends",
+                "namespace": "LoTR"
+            },
+            "GalaxyElement": [
+                {
+                    "key": "race",
+                    "value": "Hobbit"
+                },
+                {
+                    "key": "weapon",
+                    "value": "Dagger"
+                },
+                {
+                    "key": "synonyms",
+                    "value": "Pippin"
+                },
+                {
+                    "key": "synonyms",
+                    "value": "Pip"
+                }
+            ],
+            "GalaxyClusterRelation": [
+                {
+                    "referenced_galaxy_cluster_uuid": "88179640-b9d0-4e2a-86aa-76f4923b4842",
+                    "referenced_galaxy_cluster_type": "home-location",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5ed9fc93-e234-42c0-8d2d-334f0a00020f",
+                    "GalaxyClusterRelationTag": []
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda1083-1900-4a9e-b7bd-47c40a00020f",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5ed9fc93-e234-42c0-8d2d-334f0a00020f",
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "49a8ad1c-07b9-4df9-9859-d365b8e3c634",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5ed9fc93-e234-42c0-8d2d-334f0a00020f",
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                }
+            ],
+            "Org": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "Orgc": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "TargettingClusterRelation": []
+        }
+    },
+    {
+        "GalaxyCluster": {
+            "uuid": "5eda0117-1e14-4b0a-9e26-34aff331dc3b",
+            "collection_uuid": "",
+            "type": "fellowship-characters",
+            "value": "Aragorn",
+            "tag_name": "misp-galaxy:fellowship-characters=\"5eda0117-1e14-4b0a-9e26-34aff331dc3b\"",
+            "description": "The Aragorn character",
+            "source": "",
+            "authors": null,
+            "version": "1591345431",
+            "distribution": "3",
+            "sharing_group_id": null,
+            "org_id": "1",
+            "orgc_id": "1",
+            "default": false,
+            "locked": false,
+            "extends_uuid": "",
+            "extends_version": "0",
+            "Galaxy": {
+                "uuid": "93d4d641-a905-458a-83b4-18677a4ea534",
+                "name": "Fellowship characters",
+                "type": "fellowship-characters",
+                "description": "The fellowship characters from The Lord of the Rings",
+                "version": "1",
+                "icon": "user-friends",
+                "namespace": "LoTR"
+            },
+            "GalaxyElement": [
+                {
+                    "key": "race",
+                    "value": "Human"
+                },
+                {
+                    "key": "weapon",
+                    "value": "Sword"
+                },
+                {
+                    "key": "synonyms",
+                    "value": "Strider"
+                },
+                {
+                    "key": "synonyms",
+                    "value": "Elessar"
+                },
+                {
+                    "key": "synonyms",
+                    "value": "Telcontar"
+                },
+                {
+                    "key": "synonyms",
+                    "value": "Thorongil"
+                },
+                {
+                    "key": "synonyms",
+                    "value": "Estel"
+                }
+            ],
+            "GalaxyClusterRelation": [
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda0f0c-0ed0-4df4-8416-45050a00020f",
+                    "referenced_galaxy_cluster_type": "home-location",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda0117-1e14-4b0a-9e26-34aff331dc3b",
+                    "GalaxyClusterRelationTag": []
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "49a8ad1c-07b9-4df9-9859-d365b8e3c634",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda0117-1e14-4b0a-9e26-34aff331dc3b",
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda10b4-6e0c-476a-8be5-345d0a00020f",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda0117-1e14-4b0a-9e26-34aff331dc3b",
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda1083-1900-4a9e-b7bd-47c40a00020f",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda0117-1e14-4b0a-9e26-34aff331dc3b",
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                }
+            ],
+            "Org": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "Orgc": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "TargettingClusterRelation": []
+        }
+    },
+    {
+        "GalaxyCluster": {
+            "uuid": "5eda0222-0a80-4828-99fb-345cf331dc3b",
+            "collection_uuid": "",
+            "type": "fellowship-characters",
+            "value": "Boromir",
+            "tag_name": "misp-galaxy:fellowship-characters=\"5eda0222-0a80-4828-99fb-345cf331dc3b\"",
+            "description": "The Boromir character",
+            "source": "",
+            "authors": null,
+            "version": "1591345698",
+            "distribution": "3",
+            "sharing_group_id": null,
+            "org_id": "1",
+            "orgc_id": "1",
+            "default": false,
+            "locked": false,
+            "extends_uuid": "",
+            "extends_version": "0",
+            "Galaxy": {
+                "uuid": "93d4d641-a905-458a-83b4-18677a4ea534",
+                "name": "Fellowship characters",
+                "type": "fellowship-characters",
+                "description": "The fellowship characters from The Lord of the Rings",
+                "version": "1",
+                "icon": "user-friends",
+                "namespace": "LoTR"
+            },
+            "GalaxyElement": [
+                {
+                    "key": "race",
+                    "value": "Human"
+                },
+                {
+                    "key": "weapon",
+                    "value": "Sword"
+                },
+                {
+                    "key": "weapon",
+                    "value": "Shield"
+                },
+                {
+                    "key": "synonyms",
+                    "value": "Captain of the White Tower"
+                },
+                {
+                    "key": "synonyms",
+                    "value": "High Warden of the White Tower"
+                }
+            ],
+            "GalaxyClusterRelation": [
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda0f0c-0ed0-4df4-8416-45050a00020f",
+                    "referenced_galaxy_cluster_type": "home-location",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda0222-0a80-4828-99fb-345cf331dc3b",
+                    "GalaxyClusterRelationTag": []
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda10ac-c8f0-4ab5-9c31-421b0a00020f",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda0222-0a80-4828-99fb-345cf331dc3b",
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "49a8ad1c-07b9-4df9-9859-d365b8e3c634",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "1",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda0222-0a80-4828-99fb-345cf331dc3b",
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"very-likely\"",
+                            "colour": "#001cad",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "80"
+                        }
+                    ]
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda10a0-b2f0-45e3-8f25-49f60a00020f",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "0",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda0222-0a80-4828-99fb-345cf331dc3b",
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"very-likely\"",
+                            "colour": "#001cad",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "80"
+                        }
+                    ]
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda1083-1900-4a9e-b7bd-47c40a00020f",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "2",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda0222-0a80-4828-99fb-345cf331dc3b",
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"unlikely\"",
+                            "colour": "#001270",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "20"
+                        }
+                    ]
+                }
+            ],
+            "Org": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "Orgc": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "TargettingClusterRelation": []
+        }
+    },
+    {
+        "GalaxyCluster": {
+            "uuid": "5eda028a-40f4-49a9-96e0-3724f331dc3b",
+            "collection_uuid": "",
+            "type": "fellowship-characters",
+            "value": "Gandalf",
+            "tag_name": "misp-galaxy:fellowship-characters=\"5eda028a-40f4-49a9-96e0-3724f331dc3b\"",
+            "description": "The Gandalf character",
+            "source": "",
+            "authors": null,
+            "version": "1591345802",
+            "distribution": "2",
+            "sharing_group_id": null,
+            "org_id": "1",
+            "orgc_id": "1",
+            "default": false,
+            "locked": false,
+            "extends_uuid": "",
+            "extends_version": "0",
+            "Galaxy": {
+                "uuid": "93d4d641-a905-458a-83b4-18677a4ea534",
+                "name": "Fellowship characters",
+                "type": "fellowship-characters",
+                "description": "The fellowship characters from The Lord of the Rings",
+                "version": "1",
+                "icon": "user-friends",
+                "namespace": "LoTR"
+            },
+            "GalaxyElement": [
+                {
+                    "key": "race",
+                    "value": "Maia"
+                },
+                {
+                    "key": "weapon",
+                    "value": "Sword"
+                },
+                {
+                    "key": "weapon",
+                    "value": "Staff"
+                },
+                {
+                    "key": "synonyms",
+                    "value": "Mithrandir"
+                },
+                {
+                    "key": "synonyms",
+                    "value": "Thark\u00fbn"
+                },
+                {
+                    "key": "synonyms",
+                    "value": "Ol\u00f3rin"
+                },
+                {
+                    "key": "synonyms",
+                    "value": "Inc\u00e1nus"
+                }
+            ],
+            "GalaxyClusterRelation": [
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda0f04-7a70-4132-a0cc-45050a00020f",
+                    "referenced_galaxy_cluster_type": "home-location",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "1",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda028a-40f4-49a9-96e0-3724f331dc3b",
+                    "GalaxyClusterRelationTag": []
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda1083-1900-4a9e-b7bd-47c40a00020f",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda028a-40f4-49a9-96e0-3724f331dc3b",
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "49a8ad1c-07b9-4df9-9859-d365b8e3c634",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda028a-40f4-49a9-96e0-3724f331dc3b",
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                }
+            ],
+            "Org": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "Orgc": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "TargettingClusterRelation": []
+        }
+    },
+    {
+        "GalaxyCluster": {
+            "uuid": "5eda02fa-522c-4771-a0bc-345df331dc3b",
+            "collection_uuid": "",
+            "type": "fellowship-characters",
+            "value": "Gimli",
+            "tag_name": "misp-galaxy:fellowship-characters=\"5eda02fa-522c-4771-a0bc-345df331dc3b\"",
+            "description": "The Gimli character",
+            "source": "",
+            "authors": null,
+            "version": "1591345914",
+            "distribution": "3",
+            "sharing_group_id": null,
+            "org_id": "1",
+            "orgc_id": "1",
+            "default": false,
+            "locked": false,
+            "extends_uuid": "",
+            "extends_version": "0",
+            "Galaxy": {
+                "uuid": "93d4d641-a905-458a-83b4-18677a4ea534",
+                "name": "Fellowship characters",
+                "type": "fellowship-characters",
+                "description": "The fellowship characters from The Lord of the Rings",
+                "version": "1",
+                "icon": "user-friends",
+                "namespace": "LoTR"
+            },
+            "GalaxyElement": [
+                {
+                    "key": "race",
+                    "value": "Dwarf"
+                },
+                {
+                    "key": "weapon",
+                    "value": "Axe"
+                },
+                {
+                    "key": "synonyms",
+                    "value": "Elf-friend"
+                },
+                {
+                    "key": "synonyms",
+                    "value": "Lockbearer"
+                }
+            ],
+            "GalaxyClusterRelation": [
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda0f19-c5ec-4d22-a109-49f60a00020f",
+                    "referenced_galaxy_cluster_type": "home-location",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda02fa-522c-4771-a0bc-345df331dc3b",
+                    "GalaxyClusterRelationTag": []
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda1083-1900-4a9e-b7bd-47c40a00020f",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda02fa-522c-4771-a0bc-345df331dc3b",
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "49a8ad1c-07b9-4df9-9859-d365b8e3c634",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda02fa-522c-4771-a0bc-345df331dc3b",
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                }
+            ],
+            "Org": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "Orgc": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "TargettingClusterRelation": []
+        }
+    },
+    {
+        "GalaxyCluster": {
+            "uuid": "5eda0335-2fb0-4a94-ba25-1a51f331dc3b",
+            "collection_uuid": "",
+            "type": "fellowship-characters",
+            "value": "Legolas",
+            "tag_name": "misp-galaxy:fellowship-characters=\"5eda0335-2fb0-4a94-ba25-1a51f331dc3b\"",
+            "description": "The Legolas character",
+            "source": "",
+            "authors": null,
+            "version": "1591345973",
+            "distribution": "3",
+            "sharing_group_id": null,
+            "org_id": "1",
+            "orgc_id": "1",
+            "default": false,
+            "locked": false,
+            "extends_uuid": "",
+            "extends_version": "0",
+            "Galaxy": {
+                "uuid": "93d4d641-a905-458a-83b4-18677a4ea534",
+                "name": "Fellowship characters",
+                "type": "fellowship-characters",
+                "description": "The fellowship characters from The Lord of the Rings",
+                "version": "1",
+                "icon": "user-friends",
+                "namespace": "LoTR"
+            },
+            "GalaxyElement": [
+                {
+                    "key": "race",
+                    "value": "Sindar Elf"
+                },
+                {
+                    "key": "weapon",
+                    "value": "Bow"
+                },
+                {
+                    "key": "weapon",
+                    "value": "Long white knife"
+                },
+                {
+                    "key": "synonyms",
+                    "value": "Greenleaf"
+                }
+            ],
+            "GalaxyClusterRelation": [
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda0f22-d424-4d61-a71c-345d0a00020f",
+                    "referenced_galaxy_cluster_type": "home-location",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "1",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda0335-2fb0-4a94-ba25-1a51f331dc3b",
+                    "GalaxyClusterRelationTag": []
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda1083-1900-4a9e-b7bd-47c40a00020f",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda0335-2fb0-4a94-ba25-1a51f331dc3b",
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "49a8ad1c-07b9-4df9-9859-d365b8e3c634",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda0335-2fb0-4a94-ba25-1a51f331dc3b",
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                }
+            ],
+            "Org": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "Orgc": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "TargettingClusterRelation": []
+        }
+    },
+    {
+        "GalaxyCluster": {
+            "uuid": "5eda040f-2718-4dfb-85ee-345d0a00020f",
+            "collection_uuid": "",
+            "type": "fellowship-characters",
+            "value": "Gandalf the White",
+            "tag_name": "misp-galaxy:fellowship-characters=\"5eda040f-2718-4dfb-85ee-345d0a00020f\"",
+            "description": "The Gandalf the White character",
+            "source": "",
+            "authors": null,
+            "version": "1591346191",
+            "distribution": "1",
+            "sharing_group_id": null,
+            "org_id": "1",
+            "orgc_id": "1",
+            "default": false,
+            "locked": false,
+            "extends_uuid": "5eda028a-40f4-49a9-96e0-3724f331dc3b",
+            "extends_version": "1591345802",
+            "Galaxy": {
+                "uuid": "93d4d641-a905-458a-83b4-18677a4ea534",
+                "name": "Fellowship characters",
+                "type": "fellowship-characters",
+                "description": "The fellowship characters from The Lord of the Rings",
+                "version": "1",
+                "icon": "user-friends",
+                "namespace": "LoTR"
+            },
+            "GalaxyElement": [
+                {
+                    "key": "race",
+                    "value": "Maia"
+                },
+                {
+                    "key": "weapon",
+                    "value": "Sword"
+                },
+                {
+                    "key": "weapon",
+                    "value": "Staff"
+                },
+                {
+                    "key": "synonyms",
+                    "value": "Mithrandir"
+                },
+                {
+                    "key": "synonyms",
+                    "value": "Thark\u00fbn"
+                },
+                {
+                    "key": "synonyms",
+                    "value": "Ol\u00f3rin"
+                },
+                {
+                    "key": "synonyms",
+                    "value": "Inc\u00e1nus"
+                },
+                {
+                    "key": "synonyms",
+                    "value": "Gandalf"
+                }
+            ],
+            "GalaxyClusterRelation": [
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda0f04-7a70-4132-a0cc-45050a00020f",
+                    "referenced_galaxy_cluster_type": "home-location",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda040f-2718-4dfb-85ee-345d0a00020f",
+                    "GalaxyClusterRelationTag": []
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "49a8ad1c-07b9-4df9-9859-d365b8e3c634",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda040f-2718-4dfb-85ee-345d0a00020f",
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda1083-1900-4a9e-b7bd-47c40a00020f",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda040f-2718-4dfb-85ee-345d0a00020f",
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                }
+            ],
+            "Org": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "Orgc": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "TargettingClusterRelation": []
+        }
+    },
+    {
+        "GalaxyCluster": {
+            "uuid": "5eda0456-f4d8-40ab-9a77-3b280a00020f",
+            "collection_uuid": "",
+            "type": "fellowship-characters",
+            "value": "Lord of the Glittering Caves",
+            "tag_name": "misp-galaxy:fellowship-characters=\"5eda0456-f4d8-40ab-9a77-3b280a00020f\"",
+            "description": "Gimli when he became the Lord of the Glittering Caves.",
+            "source": "",
+            "authors": null,
+            "version": "1591346262",
+            "distribution": "3",
+            "sharing_group_id": null,
+            "org_id": "1",
+            "orgc_id": "1",
+            "default": false,
+            "locked": false,
+            "extends_uuid": "5eda02fa-522c-4771-a0bc-345df331dc3b",
+            "extends_version": "1591345914",
+            "Galaxy": {
+                "uuid": "93d4d641-a905-458a-83b4-18677a4ea534",
+                "name": "Fellowship characters",
+                "type": "fellowship-characters",
+                "description": "The fellowship characters from The Lord of the Rings",
+                "version": "1",
+                "icon": "user-friends",
+                "namespace": "LoTR"
+            },
+            "GalaxyElement": [
+                {
+                    "key": "race",
+                    "value": "Dwarf"
+                },
+                {
+                    "key": "weapon",
+                    "value": "Axe"
+                },
+                {
+                    "key": "synonyms",
+                    "value": "Elf-friend"
+                },
+                {
+                    "key": "synonyms",
+                    "value": "Lockbearer"
+                },
+                {
+                    "key": "synonyms",
+                    "value": "Gimli"
+                }
+            ],
+            "GalaxyClusterRelation": [
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda1304-615c-428a-9cc5-45050a00020f",
+                    "referenced_galaxy_cluster_type": "home-location",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda0456-f4d8-40ab-9a77-3b280a00020f",
+                    "GalaxyClusterRelationTag": []
+                }
+            ],
+            "Org": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "Orgc": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "TargettingClusterRelation": []
+        }
+    },
+    {
+        "GalaxyCluster": {
+            "uuid": "5eda0a53-1d98-4d01-ae06-40da0a00020f",
+            "collection_uuid": "",
+            "type": "fellowship-characters",
+            "value": "Aragorn wielding And\u00faril",
+            "tag_name": "misp-galaxy:fellowship-characters=\"5eda0a53-1d98-4d01-ae06-40da0a00020f\"",
+            "description": "The Aragorn character wielding And\u00faril",
+            "source": "",
+            "authors": null,
+            "version": "1591347795",
+            "distribution": "0",
+            "sharing_group_id": null,
+            "org_id": "1",
+            "orgc_id": "1",
+            "default": false,
+            "locked": false,
+            "extends_uuid": "5eda0117-1e14-4b0a-9e26-34aff331dc3b",
+            "extends_version": "1591345431",
+            "Galaxy": {
+                "uuid": "93d4d641-a905-458a-83b4-18677a4ea534",
+                "name": "Fellowship characters",
+                "type": "fellowship-characters",
+                "description": "The fellowship characters from The Lord of the Rings",
+                "version": "1",
+                "icon": "user-friends",
+                "namespace": "LoTR"
+            },
+            "GalaxyElement": [
+                {
+                    "key": "race",
+                    "value": "Human"
+                },
+                {
+                    "key": "weapon",
+                    "value": "And\u00faril"
+                },
+                {
+                    "key": "synonyms",
+                    "value": "Strider"
+                },
+                {
+                    "key": "synonyms",
+                    "value": "Elessar"
+                },
+                {
+                    "key": "synonyms",
+                    "value": "Telcontar"
+                },
+                {
+                    "key": "synonyms",
+                    "value": "Thorongil"
+                },
+                {
+                    "key": "synonyms",
+                    "value": "Estel"
+                }
+            ],
+            "GalaxyClusterRelation": [
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda0f0c-0ed0-4df4-8416-45050a00020f",
+                    "referenced_galaxy_cluster_type": "home-location",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda0a53-1d98-4d01-ae06-40da0a00020f",
+                    "GalaxyClusterRelationTag": []
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "49a8ad1c-07b9-4df9-9859-d365b8e3c634",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda0a53-1d98-4d01-ae06-40da0a00020f",
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda10b4-6e0c-476a-8be5-345d0a00020f",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda0a53-1d98-4d01-ae06-40da0a00020f",
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda1083-1900-4a9e-b7bd-47c40a00020f",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda0a53-1d98-4d01-ae06-40da0a00020f",
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                }
+            ],
+            "Org": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "Orgc": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "TargettingClusterRelation": []
+        }
+    },
+    {
+        "GalaxyCluster": {
+            "uuid": "88179640-b9d0-4e2a-86aa-76f4923b4842",
+            "collection_uuid": "",
+            "type": "middle-earth-locations",
+            "value": "The Shire",
+            "tag_name": "misp-galaxy:middle-earth-locations=\"88179640-b9d0-4e2a-86aa-76f4923b4842\"",
+            "description": "The Shire was the homeland of the majority of the hobbits in Middle-earth. It was located in the northwestern portion of Middle-earth, in the northern region of Eriador, within the remains of the Kingdom of Arnor.",
+            "source": "",
+            "authors": [
+                "null"
+            ],
+            "version": "1591598356",
+            "distribution": "3",
+            "sharing_group_id": null,
+            "org_id": "1",
+            "orgc_id": "1",
+            "default": false,
+            "locked": false,
+            "extends_uuid": "",
+            "extends_version": "0",
+            "Galaxy": {
+                "uuid": "b8563f2f-dd0e-4c11-bdca-c2fe7774e779",
+                "name": "Middle-earth locations",
+                "type": "middle-earth-locations",
+                "description": "The Middle-earth locations from The Lord of the Rings",
+                "version": "1",
+                "icon": "map",
+                "namespace": "LoTR"
+            },
+            "GalaxyElement": [],
+            "GalaxyClusterRelation": [],
+            "Org": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "Orgc": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "TargettingClusterRelation": [
+                {
+                    "referenced_galaxy_cluster_uuid": "88179640-b9d0-4e2a-86aa-76f4923b4842",
+                    "referenced_galaxy_cluster_type": "home-location",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "0",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "f2668718-9797-4524-8509-6dccf56c4866",
+                    "SharingGroup": [],
+                    "GalaxyClusterRelationTag": []
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "88179640-b9d0-4e2a-86aa-76f4923b4842",
+                    "referenced_galaxy_cluster_type": "home-location",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5ed9f928-aafc-44b8-a4bd-340e0a00020f",
+                    "SharingGroup": [],
+                    "GalaxyClusterRelationTag": []
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "88179640-b9d0-4e2a-86aa-76f4923b4842",
+                    "referenced_galaxy_cluster_type": "home-location",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5ed9fc93-e234-42c0-8d2d-334f0a00020f",
+                    "SharingGroup": [],
+                    "GalaxyClusterRelationTag": []
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "88179640-b9d0-4e2a-86aa-76f4923b4842",
+                    "referenced_galaxy_cluster_type": "home-location",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5ed9f752-6fa8-4787-b663-091b0a00020f",
+                    "SharingGroup": [],
+                    "GalaxyClusterRelationTag": []
+                }
+            ]
+        }
+    },
+    {
+        "GalaxyCluster": {
+            "uuid": "5eda0f04-7a70-4132-a0cc-45050a00020f",
+            "collection_uuid": "",
+            "type": "middle-earth-locations",
+            "value": "The whole Middle-earth",
+            "tag_name": "misp-galaxy:middle-earth-locations=\"5eda0f04-7a70-4132-a0cc-45050a00020f\"",
+            "description": "The whole Middle-earth",
+            "source": "",
+            "authors": null,
+            "version": "1591348996",
+            "distribution": "3",
+            "sharing_group_id": null,
+            "org_id": "1",
+            "orgc_id": "1",
+            "default": false,
+            "locked": false,
+            "extends_uuid": "",
+            "extends_version": null,
+            "Galaxy": {
+                "uuid": "b8563f2f-dd0e-4c11-bdca-c2fe7774e779",
+                "name": "Middle-earth locations",
+                "type": "middle-earth-locations",
+                "description": "The Middle-earth locations from The Lord of the Rings",
+                "version": "1",
+                "icon": "map",
+                "namespace": "LoTR"
+            },
+            "GalaxyElement": [],
+            "GalaxyClusterRelation": [],
+            "Org": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "Orgc": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "TargettingClusterRelation": [
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda0f04-7a70-4132-a0cc-45050a00020f",
+                    "referenced_galaxy_cluster_type": "home-location",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "1",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda028a-40f4-49a9-96e0-3724f331dc3b",
+                    "SharingGroup": [],
+                    "GalaxyClusterRelationTag": []
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda0f04-7a70-4132-a0cc-45050a00020f",
+                    "referenced_galaxy_cluster_type": "home-location",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda040f-2718-4dfb-85ee-345d0a00020f",
+                    "SharingGroup": [],
+                    "GalaxyClusterRelationTag": []
+                }
+            ]
+        }
+    },
+    {
+        "GalaxyCluster": {
+            "uuid": "5eda0f0c-0ed0-4df4-8416-45050a00020f",
+            "collection_uuid": "",
+            "type": "middle-earth-locations",
+            "value": "Gondor",
+            "tag_name": "misp-galaxy:middle-earth-locations=\"5eda0f0c-0ed0-4df4-8416-45050a00020f\"",
+            "description": "Southern N\u00famen\u00f3rean Realm in Exile, part of the Reunited Kingdom",
+            "source": "",
+            "authors": [
+                "null"
+            ],
+            "version": "1591598200",
+            "distribution": "3",
+            "sharing_group_id": null,
+            "org_id": "1",
+            "orgc_id": "1",
+            "default": false,
+            "locked": false,
+            "extends_uuid": "",
+            "extends_version": null,
+            "Galaxy": {
+                "uuid": "b8563f2f-dd0e-4c11-bdca-c2fe7774e779",
+                "name": "Middle-earth locations",
+                "type": "middle-earth-locations",
+                "description": "The Middle-earth locations from The Lord of the Rings",
+                "version": "1",
+                "icon": "map",
+                "namespace": "LoTR"
+            },
+            "GalaxyElement": [],
+            "GalaxyClusterRelation": [],
+            "Org": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "Orgc": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "TargettingClusterRelation": [
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda0f0c-0ed0-4df4-8416-45050a00020f",
+                    "referenced_galaxy_cluster_type": "home-location",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda0117-1e14-4b0a-9e26-34aff331dc3b",
+                    "SharingGroup": [],
+                    "GalaxyClusterRelationTag": []
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda0f0c-0ed0-4df4-8416-45050a00020f",
+                    "referenced_galaxy_cluster_type": "home-location",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda0a53-1d98-4d01-ae06-40da0a00020f",
+                    "SharingGroup": [],
+                    "GalaxyClusterRelationTag": []
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda0f0c-0ed0-4df4-8416-45050a00020f",
+                    "referenced_galaxy_cluster_type": "home-location",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda0222-0a80-4828-99fb-345cf331dc3b",
+                    "SharingGroup": [],
+                    "GalaxyClusterRelationTag": []
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda0f0c-0ed0-4df4-8416-45050a00020f",
+                    "referenced_galaxy_cluster_type": "andAnother",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "67f21003-bbc8-4993-b615-f990e539929f",
+                    "SharingGroup": [],
+                    "GalaxyClusterRelationTag": []
+                }
+            ]
+        }
+    },
+    {
+        "GalaxyCluster": {
+            "uuid": "5eda0f19-c5ec-4d22-a109-49f60a00020f",
+            "collection_uuid": "",
+            "type": "middle-earth-locations",
+            "value": "Blue Mountains",
+            "tag_name": "misp-galaxy:middle-earth-locations=\"5eda0f19-c5ec-4d22-a109-49f60a00020f\"",
+            "description": "Known for being an ancient dwelling place of the Dwarves, the boundary between Eriador and Lindon",
+            "source": "",
+            "authors": [
+                "null"
+            ],
+            "version": "1591598016",
+            "distribution": "3",
+            "sharing_group_id": null,
+            "org_id": "1",
+            "orgc_id": "1",
+            "default": false,
+            "locked": false,
+            "extends_uuid": "",
+            "extends_version": null,
+            "Galaxy": {
+                "uuid": "b8563f2f-dd0e-4c11-bdca-c2fe7774e779",
+                "name": "Middle-earth locations",
+                "type": "middle-earth-locations",
+                "description": "The Middle-earth locations from The Lord of the Rings",
+                "version": "1",
+                "icon": "map",
+                "namespace": "LoTR"
+            },
+            "GalaxyElement": [],
+            "GalaxyClusterRelation": [],
+            "Org": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "Orgc": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "TargettingClusterRelation": [
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda0f19-c5ec-4d22-a109-49f60a00020f",
+                    "referenced_galaxy_cluster_type": "home-location",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda02fa-522c-4771-a0bc-345df331dc3b",
+                    "SharingGroup": [],
+                    "GalaxyClusterRelationTag": []
+                }
+            ]
+        }
+    },
+    {
+        "GalaxyCluster": {
+            "uuid": "5eda0f22-d424-4d61-a71c-345d0a00020f",
+            "collection_uuid": "",
+            "type": "middle-earth-locations",
+            "value": "Mirkwood",
+            "tag_name": "misp-galaxy:middle-earth-locations=\"5eda0f22-d424-4d61-a71c-345d0a00020f\"",
+            "description": "Deep, thick, dark forest in Rhovanion",
+            "source": "",
+            "authors": [
+                "null"
+            ],
+            "version": "1591598284",
+            "distribution": "3",
+            "sharing_group_id": null,
+            "org_id": "1",
+            "orgc_id": "1",
+            "default": false,
+            "locked": false,
+            "extends_uuid": "",
+            "extends_version": null,
+            "Galaxy": {
+                "uuid": "b8563f2f-dd0e-4c11-bdca-c2fe7774e779",
+                "name": "Middle-earth locations",
+                "type": "middle-earth-locations",
+                "description": "The Middle-earth locations from The Lord of the Rings",
+                "version": "1",
+                "icon": "map",
+                "namespace": "LoTR"
+            },
+            "GalaxyElement": [],
+            "GalaxyClusterRelation": [],
+            "Org": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "Orgc": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "TargettingClusterRelation": [
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda0f22-d424-4d61-a71c-345d0a00020f",
+                    "referenced_galaxy_cluster_type": "home-location",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "1",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda0335-2fb0-4a94-ba25-1a51f331dc3b",
+                    "SharingGroup": [],
+                    "GalaxyClusterRelationTag": []
+                }
+            ]
+        }
+    },
+    {
+        "GalaxyCluster": {
+            "uuid": "5eda1304-615c-428a-9cc5-45050a00020f",
+            "collection_uuid": "",
+            "type": "middle-earth-locations",
+            "value": "Glittering Caves",
+            "tag_name": "misp-galaxy:middle-earth-locations=\"5eda1304-615c-428a-9cc5-45050a00020f\"",
+            "description": "Known for its jeweled radiance and beauty and for being a refuge of the Rohan during war, and later for being a Dwarven realm founded by the Dwarf hero Gimli",
+            "source": "",
+            "authors": [
+                "null"
+            ],
+            "version": "1591598084",
+            "distribution": "3",
+            "sharing_group_id": null,
+            "org_id": "1",
+            "orgc_id": "1",
+            "default": false,
+            "locked": false,
+            "extends_uuid": "",
+            "extends_version": null,
+            "Galaxy": {
+                "uuid": "b8563f2f-dd0e-4c11-bdca-c2fe7774e779",
+                "name": "Middle-earth locations",
+                "type": "middle-earth-locations",
+                "description": "The Middle-earth locations from The Lord of the Rings",
+                "version": "1",
+                "icon": "map",
+                "namespace": "LoTR"
+            },
+            "GalaxyElement": [],
+            "GalaxyClusterRelation": [],
+            "Org": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "Orgc": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "TargettingClusterRelation": [
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda1304-615c-428a-9cc5-45050a00020f",
+                    "referenced_galaxy_cluster_type": "home-location",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda0456-f4d8-40ab-9a77-3b280a00020f",
+                    "SharingGroup": [],
+                    "GalaxyClusterRelationTag": []
+                }
+            ]
+        }
+    },
+    {
+        "GalaxyCluster": {
+            "uuid": "5eda51c3-791c-4e76-bd1a-73f90a00020f",
+            "collection_uuid": "",
+            "type": "middle-earth-locations",
+            "value": "Mines of Moria",
+            "tag_name": "misp-galaxy:middle-earth-locations=\"5eda51c3-791c-4e76-bd1a-73f90a00020f\"",
+            "description": "Grandest and most famous of the mansions of the Dwarves",
+            "source": "",
+            "authors": [
+                "null"
+            ],
+            "version": "1591598265",
+            "distribution": "3",
+            "sharing_group_id": null,
+            "org_id": "1",
+            "orgc_id": "1",
+            "default": false,
+            "locked": false,
+            "extends_uuid": "",
+            "extends_version": null,
+            "Galaxy": {
+                "uuid": "b8563f2f-dd0e-4c11-bdca-c2fe7774e779",
+                "name": "Middle-earth locations",
+                "type": "middle-earth-locations",
+                "description": "The Middle-earth locations from The Lord of the Rings",
+                "version": "1",
+                "icon": "map",
+                "namespace": "LoTR"
+            },
+            "GalaxyElement": [],
+            "GalaxyClusterRelation": [],
+            "Org": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "Orgc": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "TargettingClusterRelation": []
+        }
+    },
+    {
+        "GalaxyCluster": {
+            "uuid": "49a8ad1c-07b9-4df9-9859-d365b8e3c634",
+            "collection_uuid": "",
+            "type": "motivations",
+            "value": "Protect and help Frodo",
+            "tag_name": "misp-galaxy:motivations=\"49a8ad1c-07b9-4df9-9859-d365b8e3c634\"",
+            "description": "Protect and help Frodo during his quest",
+            "source": "",
+            "authors": null,
+            "version": "1591342171",
+            "distribution": "3",
+            "sharing_group_id": null,
+            "org_id": "1",
+            "orgc_id": "1",
+            "default": false,
+            "locked": true,
+            "extends_uuid": "",
+            "extends_version": "0",
+            "Galaxy": {
+                "uuid": "fe1c605e-a8ca-47c9-83bf-a715ce6042dc",
+                "name": "Motivations",
+                "type": "motivations",
+                "description": "The motivations of characters from The Lord of the Rings",
+                "version": "1",
+                "icon": "bullseye",
+                "namespace": "LoTR"
+            },
+            "GalaxyElement": [],
+            "GalaxyClusterRelation": [],
+            "Org": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "Orgc": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "TargettingClusterRelation": [
+                {
+                    "referenced_galaxy_cluster_uuid": "49a8ad1c-07b9-4df9-9859-d365b8e3c634",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda0117-1e14-4b0a-9e26-34aff331dc3b",
+                    "SharingGroup": [],
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "49a8ad1c-07b9-4df9-9859-d365b8e3c634",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda0a53-1d98-4d01-ae06-40da0a00020f",
+                    "SharingGroup": [],
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "49a8ad1c-07b9-4df9-9859-d365b8e3c634",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda0222-0a80-4828-99fb-345cf331dc3b",
+                    "SharingGroup": [],
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"very-likely\"",
+                            "colour": "#001cad",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "80"
+                        }
+                    ]
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "49a8ad1c-07b9-4df9-9859-d365b8e3c634",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda028a-40f4-49a9-96e0-3724f331dc3b",
+                    "SharingGroup": [],
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "49a8ad1c-07b9-4df9-9859-d365b8e3c634",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda040f-2718-4dfb-85ee-345d0a00020f",
+                    "SharingGroup": [],
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "49a8ad1c-07b9-4df9-9859-d365b8e3c634",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda02fa-522c-4771-a0bc-345df331dc3b",
+                    "SharingGroup": [],
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "49a8ad1c-07b9-4df9-9859-d365b8e3c634",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda0335-2fb0-4a94-ba25-1a51f331dc3b",
+                    "SharingGroup": [],
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "49a8ad1c-07b9-4df9-9859-d365b8e3c634",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5ed9f928-aafc-44b8-a4bd-340e0a00020f",
+                    "SharingGroup": [],
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "49a8ad1c-07b9-4df9-9859-d365b8e3c634",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5ed9fc93-e234-42c0-8d2d-334f0a00020f",
+                    "SharingGroup": [],
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "49a8ad1c-07b9-4df9-9859-d365b8e3c634",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5ed9f752-6fa8-4787-b663-091b0a00020f",
+                    "SharingGroup": [],
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    {
+        "GalaxyCluster": {
+            "uuid": "5eda1083-1900-4a9e-b7bd-47c40a00020f",
+            "collection_uuid": "",
+            "type": "motivations",
+            "value": "Destroy The One Ring",
+            "tag_name": "misp-galaxy:motivations=\"5eda1083-1900-4a9e-b7bd-47c40a00020f\"",
+            "description": "Destroy The One Ring for the greater good",
+            "source": "",
+            "authors": null,
+            "version": "1591349379",
+            "distribution": "3",
+            "sharing_group_id": null,
+            "org_id": "1",
+            "orgc_id": "1",
+            "default": false,
+            "locked": true,
+            "extends_uuid": "",
+            "extends_version": null,
+            "Galaxy": {
+                "uuid": "fe1c605e-a8ca-47c9-83bf-a715ce6042dc",
+                "name": "Motivations",
+                "type": "motivations",
+                "description": "The motivations of characters from The Lord of the Rings",
+                "version": "1",
+                "icon": "bullseye",
+                "namespace": "LoTR"
+            },
+            "GalaxyElement": [],
+            "GalaxyClusterRelation": [],
+            "Org": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "Orgc": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "TargettingClusterRelation": [
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda1083-1900-4a9e-b7bd-47c40a00020f",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda0a53-1d98-4d01-ae06-40da0a00020f",
+                    "SharingGroup": [],
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda1083-1900-4a9e-b7bd-47c40a00020f",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda0117-1e14-4b0a-9e26-34aff331dc3b",
+                    "SharingGroup": [],
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda1083-1900-4a9e-b7bd-47c40a00020f",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "f2668718-9797-4524-8509-6dccf56c4866",
+                    "SharingGroup": [],
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda1083-1900-4a9e-b7bd-47c40a00020f",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda028a-40f4-49a9-96e0-3724f331dc3b",
+                    "SharingGroup": [],
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda1083-1900-4a9e-b7bd-47c40a00020f",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda040f-2718-4dfb-85ee-345d0a00020f",
+                    "SharingGroup": [],
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda1083-1900-4a9e-b7bd-47c40a00020f",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda02fa-522c-4771-a0bc-345df331dc3b",
+                    "SharingGroup": [],
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda1083-1900-4a9e-b7bd-47c40a00020f",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda0335-2fb0-4a94-ba25-1a51f331dc3b",
+                    "SharingGroup": [],
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda1083-1900-4a9e-b7bd-47c40a00020f",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5ed9f928-aafc-44b8-a4bd-340e0a00020f",
+                    "SharingGroup": [],
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda1083-1900-4a9e-b7bd-47c40a00020f",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5ed9fc93-e234-42c0-8d2d-334f0a00020f",
+                    "SharingGroup": [],
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda1083-1900-4a9e-b7bd-47c40a00020f",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5ed9f752-6fa8-4787-b663-091b0a00020f",
+                    "SharingGroup": [],
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda1083-1900-4a9e-b7bd-47c40a00020f",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda0222-0a80-4828-99fb-345cf331dc3b",
+                    "SharingGroup": [],
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"unlikely\"",
+                            "colour": "#001270",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "20"
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    {
+        "GalaxyCluster": {
+            "uuid": "5eda10a0-b2f0-45e3-8f25-49f60a00020f",
+            "collection_uuid": "",
+            "type": "motivations",
+            "value": "Seize The One Ring",
+            "tag_name": "misp-galaxy:motivations=\"5eda10a0-b2f0-45e3-8f25-49f60a00020f\"",
+            "description": "Seize The One Ring",
+            "source": "",
+            "authors": null,
+            "version": "1591349408",
+            "distribution": "3",
+            "sharing_group_id": null,
+            "org_id": "1",
+            "orgc_id": "1",
+            "default": false,
+            "locked": true,
+            "extends_uuid": "",
+            "extends_version": null,
+            "Galaxy": {
+                "uuid": "fe1c605e-a8ca-47c9-83bf-a715ce6042dc",
+                "name": "Motivations",
+                "type": "motivations",
+                "description": "The motivations of characters from The Lord of the Rings",
+                "version": "1",
+                "icon": "bullseye",
+                "namespace": "LoTR"
+            },
+            "GalaxyElement": [],
+            "GalaxyClusterRelation": [],
+            "Org": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "Orgc": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "TargettingClusterRelation": [
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda10a0-b2f0-45e3-8f25-49f60a00020f",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "0",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda0222-0a80-4828-99fb-345cf331dc3b",
+                    "SharingGroup": [],
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"very-likely\"",
+                            "colour": "#001cad",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "80"
+                        }
+                    ]
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda10a0-b2f0-45e3-8f25-49f60a00020f",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5ed9f752-6fa8-4787-b663-091b0a00020f",
+                    "SharingGroup": [],
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"very-unlikely\"",
+                            "colour": "#000f5c",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "5"
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    {
+        "GalaxyCluster": {
+            "uuid": "5eda10ac-c8f0-4ab5-9c31-421b0a00020f",
+            "collection_uuid": "",
+            "type": "motivations",
+            "value": "Defend Gondor",
+            "tag_name": "misp-galaxy:motivations=\"5eda10ac-c8f0-4ab5-9c31-421b0a00020f\"",
+            "description": "Defend Gondor",
+            "source": "",
+            "authors": null,
+            "version": "1591349420",
+            "distribution": "3",
+            "sharing_group_id": null,
+            "org_id": "1",
+            "orgc_id": "1",
+            "default": false,
+            "locked": true,
+            "extends_uuid": "",
+            "extends_version": null,
+            "Galaxy": {
+                "uuid": "fe1c605e-a8ca-47c9-83bf-a715ce6042dc",
+                "name": "Motivations",
+                "type": "motivations",
+                "description": "The motivations of characters from The Lord of the Rings",
+                "version": "1",
+                "icon": "bullseye",
+                "namespace": "LoTR"
+            },
+            "GalaxyElement": [],
+            "GalaxyClusterRelation": [],
+            "Org": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "Orgc": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "TargettingClusterRelation": [
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda10ac-c8f0-4ab5-9c31-421b0a00020f",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda0222-0a80-4828-99fb-345cf331dc3b",
+                    "SharingGroup": [],
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    {
+        "GalaxyCluster": {
+            "uuid": "5eda10b4-6e0c-476a-8be5-345d0a00020f",
+            "collection_uuid": "",
+            "type": "motivations",
+            "value": "Pursue servants of Sauron",
+            "tag_name": "misp-galaxy:motivations=\"5eda10b4-6e0c-476a-8be5-345d0a00020f\"",
+            "description": "Pursue servants of Sauron",
+            "source": "",
+            "authors": null,
+            "version": "1591349428",
+            "distribution": "3",
+            "sharing_group_id": null,
+            "org_id": "1",
+            "orgc_id": "1",
+            "default": false,
+            "locked": true,
+            "extends_uuid": "",
+            "extends_version": null,
+            "Galaxy": {
+                "uuid": "fe1c605e-a8ca-47c9-83bf-a715ce6042dc",
+                "name": "Motivations",
+                "type": "motivations",
+                "description": "The motivations of characters from The Lord of the Rings",
+                "version": "1",
+                "icon": "bullseye",
+                "namespace": "LoTR"
+            },
+            "GalaxyElement": [],
+            "GalaxyClusterRelation": [],
+            "Org": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "Orgc": {
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "TargettingClusterRelation": [
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda10b4-6e0c-476a-8be5-345d0a00020f",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda0117-1e14-4b0a-9e26-34aff331dc3b",
+                    "SharingGroup": [],
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                },
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda10b4-6e0c-476a-8be5-345d0a00020f",
+                    "referenced_galaxy_cluster_type": "motive",
+                    "referenced_galaxy_cluster_value": "",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5eda0a53-1d98-4d01-ae06-40da0a00020f",
+                    "SharingGroup": [],
+                    "Tag": [
+                        {
+                            "name": "estimative-language:likelihood-probability=\"almost-certain\"",
+                            "colour": "#001fc2",
+                            "exportable": true,
+                            "hide_tag": false,
+                            "numerical_value": "95"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+]

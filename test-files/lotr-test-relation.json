@@ -1,0 +1,11 @@
+{
+    "GalaxyClusterRelation": {
+        "galaxy_cluster_uuid": "88179640-b9d0-4e2a-86aa-76f4923b4842",
+        "default": false,
+        "distribution": "2",
+        "sharing_group_id": "0",
+        "referenced_galaxy_cluster_uuid": "5eda0f04-7a70-4132-a0cc-45050a00020f",
+        "referenced_galaxy_cluster_type": "belongs to",
+        "tags": "estimative-language:likelihood-probability=\"very-likely\""
+    }
+}

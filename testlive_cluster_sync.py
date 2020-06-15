@@ -21,6 +21,7 @@ urllib3.disable_warnings()
 LOTR_GALAXY_PATH = 'test-files/lotr-galaxy-cluster.json'
 LOTR_TEST_CLUSTER_PATH = 'test-files/lotr-test-cluster.json'
 LOTR_TEST_RELATION_PATH = 'test-files/lotr-test-relation.json'
+MITRE_TEST_GALAXY_PATH = 'test-files/test-mitre-mobile-attack-course-of-action.json'
 
 def setup_cluster_env(func):
     @functools.wraps(func)
@@ -59,6 +60,7 @@ class TestClusterSync(unittest.TestCase):
         cls.lotr_clusters = []
         cls.lotr_test_cluster = {}
         cls.lotr_test_relation = {}
+        cls.mitre_test_galaxy = {}
 
         #ready = False
         #while not ready:
@@ -223,10 +225,10 @@ class TestClusterSync(unittest.TestCase):
                 "tag_name": tag_name
             }
             relative_path = 'galaxy_clusters/restSearch'
-            clusterFromRestSearch = misp_central.org_admin_connector.direct_call(relative_path, data=filters)
-            self.assertEqual(len(clusterFromRestSearch), 1)
-            clusterFromRestSearch = clusterFromRestSearch[0]
-            self.compare_cluster(added_cluster, clusterFromRestSearch, mirrorCheck=True)
+            clusters_from_restsearch = misp_central.org_admin_connector.direct_call(relative_path, data=filters)
+            self.assertEqual(len(clusters_from_restsearch), 1)
+            clusters_from_restsearch = clusters_from_restsearch[0]
+            self.compare_cluster(added_cluster, clusters_from_restsearch, mirrorCheck=True)
         finally:
             pass
 
@@ -287,7 +289,62 @@ class TestClusterSync(unittest.TestCase):
         finally:
             pass
 
+    def test_import_galaxy_from_repo(self):
+        '''Test galaxy import from repository'''
+        try:
+            misp_central = self.misp_instances.central_node
+            relative_path = f'/galaxies/update'
+            misp_central.site_admin_connector.direct_call(relative_path, data={})
+            filters = {
+                "default": True
+            }
+            relative_path = 'galaxy_clusters/restSearch'
+            clusters_from_restsearch = misp_central.org_admin_connector.direct_call(relative_path, data=filters)
+            self.assertEqual(len(clusters_from_restsearch), 14)
+            mitre_clusters = self.get_test_mitre_galaxy_from_disk()
+            mitre_clusters = {cluster['uuid']: cluster for cluster in mitre_clusters['values']}
+            for cluster in clusters_from_restsearch:
+                self.assertIn(cluster['GalaxyCluster']['uuid'], mitre_clusters)
+                mitre_cluster = mitre_clusters[cluster['GalaxyCluster']['uuid']]
+                self.assertEqual(mitre_cluster['description'], cluster['GalaxyCluster']['description'])
+                self.assertEqual(mitre_cluster['value'], cluster['GalaxyCluster']['value'])
+                self.assertEqual(cluster['GalaxyCluster']['Org']['uuid'], '0')
+                self.assertEqual(cluster['GalaxyCluster']['Orgc']['uuid'], '0')
+                self.assertEqual(cluster['GalaxyCluster']['Org']['name'], 'MISP')
+                self.assertEqual(cluster['GalaxyCluster']['Orgc']['name'], 'MISP')
 
+                if 'meta' in mitre_cluster:
+                    to_check_element_mitre = []
+                    for k, v in mitre_cluster['meta'].items():
+                        if type(v) is list:
+                            to_check_element_mitre = to_check_element_mitre + [{'key': k, 'value': v2} for v2 in v]
+                        else:
+                            to_check_element_mitre.append({'key': k, 'value': v})
+
+                self.assertEqual(len(cluster['GalaxyCluster']['GalaxyElement']), len(to_check_element_mitre))
+                to_check_element = [ self.extract_useful_fields(e, ['key', 'value']) for e in cluster['GalaxyCluster']['GalaxyElement']]
+                self.assertEqual(to_check_element, to_check_element_mitre)
+
+                if 'related' in mitre_cluster:
+                    to_check_relation_mitre = []
+                    for relation in mitre_cluster['related']:
+                        tmp_relation = {
+                            'referenced_galaxy_cluster_uuid': relation['dest-uuid'],
+                            'referenced_galaxy_cluster_type': relation['type'],
+                            'default': True,
+                        }
+                        if 'tags' in relation:
+                            tmp_relation['Tag'] = [{'name': tag_name} for tag_name in relation['tags']]
+                        to_check_relation_mitre.append(tmp_relation)
+
+                self.assertEqual(len(cluster['GalaxyCluster']['GalaxyClusterRelation']), len(to_check_relation_mitre))
+                for rel1 in to_check_relation_mitre:
+                    rel2 = self.find_relation_in_cluster(rel1, cluster['GalaxyCluster']['GalaxyClusterRelation'])
+                    self.assertIsNot(rel2, False)
+                    self.compare_relation(rel1, rel2, mirrorCheck=False, fromPull=False)
+
+        finally:
+            self.delete_mitre_clusters(misp_central.site_admin_connector)
 
     def import_lotr_galaxies(self, instance):
         lotr_clusters = self.get_lotr_clusters_from_disk()
@@ -301,6 +358,11 @@ class TestClusterSync(unittest.TestCase):
         for galaxy_id in lotr_uuids:
             relative_path = f'galaxies/delete/{galaxy_id}'
             instance.direct_call(relative_path, {})
+
+    def delete_mitre_clusters(self, instance):
+        mitre_uuids = "0282356a-1708-11e8-8f53-975633d5c03c"
+        relative_path = f'galaxies/delete/{mitre_uuids}'
+        instance.direct_call(relative_path, {})
 
     def get_clusters(self, instance):
         filters = {
@@ -338,6 +400,12 @@ class TestClusterSync(unittest.TestCase):
             with open(LOTR_TEST_RELATION_PATH) as f:
                 self.lotr_test_relation = json.load(f)
         return self.lotr_test_relation
+
+    def get_test_mitre_galaxy_from_disk(self):
+        if len(self.mitre_test_galaxy) == 0:
+            with open(MITRE_TEST_GALAXY_PATH) as f:
+                self.mitre_test_galaxy = json.load(f)
+        return self.mitre_test_galaxy
 
     def compare_cluster_with_disk(self, clusters, mirrorCheck=False, fromPull=False):
         base_clusters = self.get_lotr_clusters_from_disk()

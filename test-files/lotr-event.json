@@ -1,0 +1,347 @@
+{
+    "Event": {
+        "id": "4",
+        "orgc_id": "1",
+        "org_id": "1",
+        "date": "2020-06-05",
+        "threat_level_id": "4",
+        "info": "Battle at the bridge of Khazad-d\u00fbm",
+        "published": false,
+        "uuid": "5eda521d-8ed0-4177-808f-79610a00020f",
+        "attribute_count": "3",
+        "analysis": "2",
+        "timestamp": "1591366567",
+        "distribution": "3",
+        "proposal_email_lock": false,
+        "locked": false,
+        "publish_timestamp": "0",
+        "sharing_group_id": "0",
+        "disable_correlation": false,
+        "extends_uuid": "",
+        "event_creator_email": "admin@admin.test",
+        "Org": {
+            "id": "1",
+            "name": "original.org",
+            "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+            "local": true
+        },
+        "Orgc": {
+            "id": "1",
+            "name": "original.org",
+            "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+            "local": true
+        },
+        "Attribute": [],
+        "ShadowAttribute": [],
+        "RelatedEvent": [
+            {
+                "Event": {
+                    "id": "6",
+                    "date": "2020-06-10",
+                    "threat_level_id": "1",
+                    "info": "Battle at the Chamber of Mazarbul",
+                    "published": false,
+                    "uuid": "5ee09be9-3608-4ace-b488-7e170a00020f",
+                    "analysis": "0",
+                    "timestamp": "1591779076",
+                    "distribution": "1",
+                    "org_id": "1",
+                    "orgc_id": "1",
+                    "Org": {
+                        "id": "1",
+                        "name": "original.org",
+                        "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b"
+                    },
+                    "Orgc": {
+                        "id": "1",
+                        "name": "original.org",
+                        "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b"
+                    }
+                }
+            }
+        ],
+        "Galaxy": [
+            {
+                "id": "5",
+                "uuid": "b8563f2f-dd0e-4c11-bdca-c2fe7774e779",
+                "name": "Middle-earth locations",
+                "type": "middle-earth-locations",
+                "description": "The Middle-earth locations from The Lord of the Rings",
+                "version": "1",
+                "icon": "map",
+                "namespace": "LoTR",
+                "GalaxyCluster": [
+                    {
+                        "id": "61",
+                        "uuid": "5eda51c3-791c-4e76-bd1a-73f90a00020f",
+                        "collection_uuid": "",
+                        "type": "middle-earth-locations",
+                        "value": "Mines of Moria",
+                        "tag_name": "misp-galaxy:middle-earth-locations=\"5eda51c3-791c-4e76-bd1a-73f90a00020f\"",
+                        "description": "Grandest and most famous of the mansions of the Dwarves",
+                        "galaxy_id": "5",
+                        "source": "",
+                        "authors": [
+                            "null"
+                        ],
+                        "version": "1591598265",
+                        "distribution": "3",
+                        "sharing_group_id": null,
+                        "org_id": "1",
+                        "orgc_id": "1",
+                        "default": false,
+                        "locked": false,
+                        "extends_uuid": "",
+                        "extends_version": null,
+                        "meta": {},
+                        "tag_id": "37",
+                        "local": false
+                    }
+                ]
+            }
+        ],
+        "Object": [
+            {
+                "id": "1",
+                "name": "person",
+                "meta-category": "misc",
+                "description": "An object which describes a person or an identity.",
+                "template_uuid": "a15b0477-e9d1-4b9c-9546-abe78a4f4248",
+                "template_version": "10",
+                "event_id": "4",
+                "uuid": "5eda52bd-fd6c-49c0-a2fe-72490a00020f",
+                "timestamp": "1591366567",
+                "distribution": "5",
+                "sharing_group_id": "0",
+                "comment": "",
+                "deleted": false,
+                "first_seen": null,
+                "last_seen": null,
+                "ObjectReference": [
+                    {
+                        "id": "1",
+                        "uuid": "5eda52ee-c72c-4a5a-b67e-6cfd0a00020f",
+                        "timestamp": "1591366382",
+                        "object_id": "1",
+                        "event_id": "4",
+                        "source_uuid": null,
+                        "referenced_uuid": "5eda52da-28c0-4eac-84c3-6cfd0a00020f",
+                        "referenced_id": "2",
+                        "referenced_type": "1",
+                        "relationship_type": "fight",
+                        "comment": "",
+                        "deleted": false,
+                        "Object": {
+                            "distribution": "5",
+                            "sharing_group_id": "0",
+                            "uuid": "5eda52da-28c0-4eac-84c3-6cfd0a00020f",
+                            "name": "person",
+                            "meta-category": "misc"
+                        }
+                    },
+                    {
+                        "id": "2",
+                        "uuid": "5eda53a7-1568-4da3-bcdc-74650a00020f",
+                        "timestamp": "1591366567",
+                        "object_id": "1",
+                        "event_id": "4",
+                        "source_uuid": null,
+                        "referenced_uuid": "5eda536a-b4a8-4d50-9155-7c4d0a00020f",
+                        "referenced_id": "3",
+                        "referenced_type": "1",
+                        "relationship_type": "said",
+                        "comment": "",
+                        "deleted": false,
+                        "Object": {
+                            "distribution": "5",
+                            "sharing_group_id": "0",
+                            "uuid": "5eda536a-b4a8-4d50-9155-7c4d0a00020f",
+                            "name": "narrative",
+                            "meta-category": "misc"
+                        }
+                    }
+                ],
+                "Attribute": [
+                    {
+                        "id": "742",
+                        "type": "text",
+                        "category": "Other",
+                        "to_ids": false,
+                        "uuid": "5eda52bd-432c-45ef-83ee-72490a00020f",
+                        "event_id": "4",
+                        "distribution": "5",
+                        "timestamp": "1591366333",
+                        "comment": "",
+                        "sharing_group_id": "0",
+                        "deleted": false,
+                        "disable_correlation": false,
+                        "object_id": "1",
+                        "object_relation": "alias",
+                        "first_seen": null,
+                        "last_seen": null,
+                        "value": "Gandalf",
+                        "Galaxy": [
+                            {
+                                "id": "4",
+                                "uuid": "93d4d641-a905-458a-83b4-18677a4ea534",
+                                "name": "Fellowship characters",
+                                "type": "fellowship-characters",
+                                "description": "The fellowship characters from The Lord of the Rings",
+                                "version": "1",
+                                "icon": "user-friends",
+                                "namespace": "LoTR",
+                                "GalaxyCluster": [
+                                    {
+                                        "id": "41",
+                                        "uuid": "5eda028a-40f4-49a9-96e0-3724f331dc3b",
+                                        "collection_uuid": "",
+                                        "type": "fellowship-characters",
+                                        "value": "Gandalf",
+                                        "tag_name": "misp-galaxy:fellowship-characters=\"5eda028a-40f4-49a9-96e0-3724f331dc3b\"",
+                                        "description": "The Gandalf character",
+                                        "galaxy_id": "4",
+                                        "source": "",
+                                        "authors": null,
+                                        "version": "1591345802",
+                                        "distribution": "3",
+                                        "sharing_group_id": null,
+                                        "org_id": "1",
+                                        "orgc_id": "1",
+                                        "default": false,
+                                        "locked": false,
+                                        "extends_uuid": "",
+                                        "extends_version": null,
+                                        "meta": {
+                                            "race": [
+                                                "Maia"
+                                            ],
+                                            "weapon": [
+                                                "Sword",
+                                                "Staff"
+                                            ],
+                                            "synonyms": [
+                                                "Mithrandir",
+                                                "Thark\u00fbn",
+                                                "Ol\u00f3rin",
+                                                "Inc\u00e1nus"
+                                            ]
+                                        },
+                                        "tag_id": "38",
+                                        "local": false
+                                    }
+                                ]
+                            }
+                        ],
+                        "ShadowAttribute": [],
+                        "Tag": [
+                            {
+                                "id": "38",
+                                "name": "misp-galaxy:fellowship-characters=\"5eda028a-40f4-49a9-96e0-3724f331dc3b\"",
+                                "colour": "#0088cc",
+                                "exportable": true,
+                                "user_id": "0",
+                                "hide_tag": false,
+                                "numerical_value": null,
+                                "local": 0
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "2",
+                "name": "person",
+                "meta-category": "misc",
+                "description": "An object which describes a person or an identity.",
+                "template_uuid": "a15b0477-e9d1-4b9c-9546-abe78a4f4248",
+                "template_version": "10",
+                "event_id": "4",
+                "uuid": "5eda52da-28c0-4eac-84c3-6cfd0a00020f",
+                "timestamp": "1591366362",
+                "distribution": "5",
+                "sharing_group_id": "0",
+                "comment": "",
+                "deleted": false,
+                "first_seen": null,
+                "last_seen": null,
+                "ObjectReference": [],
+                "Attribute": [
+                    {
+                        "id": "743",
+                        "type": "text",
+                        "category": "Other",
+                        "to_ids": false,
+                        "uuid": "5eda52da-b810-470d-a346-6cfd0a00020f",
+                        "event_id": "4",
+                        "distribution": "5",
+                        "timestamp": "1591366362",
+                        "comment": "",
+                        "sharing_group_id": "0",
+                        "deleted": false,
+                        "disable_correlation": false,
+                        "object_id": "2",
+                        "object_relation": "alias",
+                        "first_seen": null,
+                        "last_seen": null,
+                        "value": "Balrog",
+                        "Galaxy": [],
+                        "ShadowAttribute": []
+                    }
+                ]
+            },
+            {
+                "id": "3",
+                "name": "narrative",
+                "meta-category": "misc",
+                "description": "Object describing a narrative.",
+                "template_uuid": "83bea299-514a-4719-a84b-f6fd0997fac1",
+                "template_version": "4",
+                "event_id": "4",
+                "uuid": "5eda536a-b4a8-4d50-9155-7c4d0a00020f",
+                "timestamp": "1591366506",
+                "distribution": "5",
+                "sharing_group_id": "0",
+                "comment": "",
+                "deleted": false,
+                "first_seen": null,
+                "last_seen": null,
+                "ObjectReference": [],
+                "Attribute": [
+                    {
+                        "id": "744",
+                        "type": "text",
+                        "category": "Other",
+                        "to_ids": false,
+                        "uuid": "5eda536b-5ebc-4c58-aa60-7c4d0a00020f",
+                        "event_id": "4",
+                        "distribution": "5",
+                        "timestamp": "1591366507",
+                        "comment": "",
+                        "sharing_group_id": "0",
+                        "deleted": false,
+                        "disable_correlation": false,
+                        "object_id": "3",
+                        "object_relation": "narrative-summary",
+                        "first_seen": null,
+                        "last_seen": null,
+                        "value": "You cannot pass,\" he said. The orcs stood still, and a dead silence fell. \"I am a servant of the Secret Fire, wielder of the flame of Anor. You cannot pass. The dark fire will not avail you, flame of Ud\u00fbn. Go back to the Shadow! You cannot pass.",
+                        "Galaxy": [],
+                        "ShadowAttribute": []
+                    }
+                ]
+            }
+        ],
+        "Tag": [
+            {
+                "id": "37",
+                "name": "misp-galaxy:middle-earth-locations=\"5eda51c3-791c-4e76-bd1a-73f90a00020f\"",
+                "colour": "#0088cc",
+                "exportable": true,
+                "user_id": "0",
+                "hide_tag": false,
+                "numerical_value": null,
+                "local": 0
+            }
+        ]
+    }
+}
