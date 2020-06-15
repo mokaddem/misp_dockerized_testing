@@ -20,6 +20,7 @@ urllib3.disable_warnings()
 
 LOTR_GALAXY_PATH = 'test-files/lotr-galaxy-cluster.json'
 LOTR_TEST_CLUSTER_PATH = 'test-files/lotr-test-cluster.json'
+LOTR_TEST_RELATION_PATH = 'test-files/lotr-test-relation.json'
 
 def setup_cluster_env(func):
     @functools.wraps(func)
@@ -30,6 +31,7 @@ def setup_cluster_env(func):
             func(self,*args,**kwargs)
         finally:
             self.delete_lotr_clusters(misp_central.site_admin_connector)
+            pass
     return wrapper
 
 
@@ -41,6 +43,7 @@ class TestClusterSync(unittest.TestCase):
         cls.misp_instances = MISPInstances()
         cls.lotr_clusters = []
         cls.lotr_test_cluster = {}
+        cls.lotr_test_relation = {}
 
         #ready = False
         #while not ready:
@@ -212,12 +215,49 @@ class TestClusterSync(unittest.TestCase):
         finally:
             pass
 
-    # @setup_cluster_env
-    # def test_add_cluster_relation(self):
-    #     pass
+    @setup_cluster_env
+    def test_add_relation(self):
+        '''Test galaxy_cluster_relation add'''
+        try:
+            misp_central = self.misp_instances.central_node
+            relative_path = '/galaxy_cluster_relations/add'
+            lotr_test_relation = self.get_test_relation_from_disk()
+            tmp = misp_central.org_admin_connector.direct_call(relative_path, data=lotr_test_relation)
+            self.assertNotIn('errors', tmp)
+            cluster = self.get_cluster(misp_central.org_admin_connector, lotr_test_relation['GalaxyClusterRelation']['galaxy_cluster_uuid'])
+            relation = self.find_relation_in_cluster(lotr_test_relation['GalaxyClusterRelation'], cluster['GalaxyCluster']['GalaxyClusterRelation'])
+            self.assertIsNot(relation, False)
+            relation_id = relation['id']
+            addedRelation = self.get_relation(misp_central.org_admin_connector, relation_id)
+            self.assertIn('GalaxyClusterRelation', addedRelation)
+            self.compare_relation(addedRelation['GalaxyClusterRelation'], lotr_test_relation['GalaxyClusterRelation'])
+        finally:
+            pass
+
+    @setup_cluster_env
+    def test_delete_relation(self):
+        '''Test galaxy_cluster_relation delete'''
+        try:
+            misp_central = self.misp_instances.central_node
+            relative_path = '/galaxy_cluster_relations/add'
+            lotr_test_relation = self.get_test_relation_from_disk()
+            tmp = misp_central.org_admin_connector.direct_call(relative_path, data=lotr_test_relation)
+            self.assertNotIn('errors', tmp)
+            cluster = self.get_cluster(misp_central.org_admin_connector, lotr_test_relation['GalaxyClusterRelation']['galaxy_cluster_uuid'])
+            relation = self.find_relation_in_cluster(lotr_test_relation['GalaxyClusterRelation'], cluster['GalaxyCluster']['GalaxyClusterRelation'])
+            self.assertIsNot(relation, False)
+            relation_id = relation['id']
+            relative_path = f'/galaxy_cluster_relations/delete/{relation_id}'
+            tmp = misp_central.org_admin_connector.direct_call(relative_path, data={})
+            cluster = self.get_cluster(misp_central.org_admin_connector, lotr_test_relation['GalaxyClusterRelation']['galaxy_cluster_uuid'])
+            relation = self.find_relation_in_cluster(lotr_test_relation['GalaxyClusterRelation'], cluster['GalaxyCluster']['GalaxyClusterRelation'])
+            self.assertIs(relation, False)
+        finally:
+            pass
 
     # @setup_cluster_env
-    # def test_edit_cluster_relation(self):
+    # def test_edit_relation(self):
+    #     '''Test galaxy_cluster_relation edit'''
     #     pass
 
     def import_lotr_galaxies(self, instance):
@@ -248,6 +288,10 @@ class TestClusterSync(unittest.TestCase):
         relative_path = f'galaxy_clusters/view/{uuid}'
         return instance.direct_call(relative_path)
 
+    def get_relation(self, instance, relation_id):
+        relative_path = f'galaxy_cluster_relations/view/{relation_id}'
+        return instance.direct_call(relative_path)
+
     def get_lotr_clusters_from_disk(self):
         if len(self.lotr_clusters) == 0:
             with open(LOTR_GALAXY_PATH) as f:
@@ -259,6 +303,12 @@ class TestClusterSync(unittest.TestCase):
             with open(LOTR_TEST_CLUSTER_PATH) as f:
                 self.lotr_test_cluster = json.load(f)
         return self.lotr_test_cluster
+
+    def get_test_relation_from_disk(self):
+        if len(self.lotr_test_relation) == 0:
+            with open(LOTR_TEST_RELATION_PATH) as f:
+                self.lotr_test_relation = json.load(f)
+        return self.lotr_test_relation
 
     def compare_cluster_with_disk(self, clusters, mirrorCheck=False, fromPull=False):
         base_clusters = self.get_lotr_clusters_from_disk()
@@ -280,10 +330,6 @@ class TestClusterSync(unittest.TestCase):
     def compare_cluster(self, cluster1, cluster2, mirrorCheck=False, fromPull=False):
         to_check_cluster = ['uuid', 'version', 'value', 'type', 'extends_uuid', 'extends_version']
         to_check_element = ['key', 'value']
-        to_check_relation = ['referenced_galaxy_cluster_uuid', 'referenced_galaxy_cluster_type', 'default']
-        if mirrorCheck:
-                to_check_relation.append('distribution')
-        to_check_tag = ['name']
 
         for k in to_check_cluster:
             self.assertEqual(cluster1['GalaxyCluster'][k], cluster2['GalaxyCluster'][k])
@@ -304,14 +350,21 @@ class TestClusterSync(unittest.TestCase):
             else:
                 self.assertIsNot(rel2, False)
 
-            for k in to_check_relation:
-                self.assertEqual(rel1[k], rel2[k])
+            self.compare_relation(rel1, rel2, mirrorCheck=mirrorCheck, fromPull=fromPull)
 
-            if 'Tag' in rel1:
-                toCheckTag1 = [ self.extract_useful_fields(t, to_check_tag) for t in rel1['Tag']]
-                toCheckTag2 = [ self.extract_useful_fields(t, to_check_tag) for t in rel2['Tag']]
-                for tag1 in toCheckTag1:
-                    self.assertIn(tag1, toCheckTag2)
+    def compare_relation(self, relation1, relation2, mirrorCheck=False, fromPull=False):
+        to_check_relation = ['referenced_galaxy_cluster_uuid', 'referenced_galaxy_cluster_type', 'default']
+        if mirrorCheck:
+                to_check_relation.append('distribution')
+        to_check_tag = ['name']
+
+        for k in to_check_relation:
+            self.assertEqual(relation1[k], relation2[k])
+
+        if 'Tag' in relation1:
+            toCheckTag1 = [ self.extract_useful_fields(t, to_check_tag) for t in relation1['Tag']]
+            toCheckTag2 = [ self.extract_useful_fields(t, to_check_tag) for t in relation2['Tag']]
+            self.assertEqual(toCheckTag1, toCheckTag2)
 
     def extract_useful_fields(self, orig_dict, keys_to_extract):
         return { key: orig_dict[key] for key in keys_to_extract }
