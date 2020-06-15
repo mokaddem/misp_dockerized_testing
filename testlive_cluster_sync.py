@@ -34,6 +34,21 @@ def setup_cluster_env(func):
             pass
     return wrapper
 
+def setup_relation_env(func):
+    @setup_cluster_env
+    @functools.wraps(func)
+    def wrapper(self,*args,**kwargs):
+        try:
+            misp_central = self.misp_instances.central_node
+            relative_path = '/galaxy_cluster_relations/add'
+            lotr_test_relation = self.get_test_relation_from_disk()
+            tmp = misp_central.org_admin_connector.direct_call(relative_path, data=lotr_test_relation)
+            self.assertNotIn('errors', tmp)
+            func(self,*args,**kwargs)
+        finally:
+            pass
+    return wrapper
+
 
 class TestClusterSync(unittest.TestCase):
 
@@ -215,15 +230,12 @@ class TestClusterSync(unittest.TestCase):
         finally:
             pass
 
-    @setup_cluster_env
+    @setup_relation_env
     def test_add_relation(self):
         '''Test galaxy_cluster_relation add'''
         try:
             misp_central = self.misp_instances.central_node
-            relative_path = '/galaxy_cluster_relations/add'
             lotr_test_relation = self.get_test_relation_from_disk()
-            tmp = misp_central.org_admin_connector.direct_call(relative_path, data=lotr_test_relation)
-            self.assertNotIn('errors', tmp)
             cluster = self.get_cluster(misp_central.org_admin_connector, lotr_test_relation['GalaxyClusterRelation']['galaxy_cluster_uuid'])
             relation = self.find_relation_in_cluster(lotr_test_relation['GalaxyClusterRelation'], cluster['GalaxyCluster']['GalaxyClusterRelation'])
             self.assertIsNot(relation, False)
@@ -234,31 +246,48 @@ class TestClusterSync(unittest.TestCase):
         finally:
             pass
 
-    @setup_cluster_env
+    @setup_relation_env
     def test_delete_relation(self):
         '''Test galaxy_cluster_relation delete'''
         try:
             misp_central = self.misp_instances.central_node
-            relative_path = '/galaxy_cluster_relations/add'
             lotr_test_relation = self.get_test_relation_from_disk()
-            tmp = misp_central.org_admin_connector.direct_call(relative_path, data=lotr_test_relation)
-            self.assertNotIn('errors', tmp)
             cluster = self.get_cluster(misp_central.org_admin_connector, lotr_test_relation['GalaxyClusterRelation']['galaxy_cluster_uuid'])
             relation = self.find_relation_in_cluster(lotr_test_relation['GalaxyClusterRelation'], cluster['GalaxyCluster']['GalaxyClusterRelation'])
             self.assertIsNot(relation, False)
             relation_id = relation['id']
             relative_path = f'/galaxy_cluster_relations/delete/{relation_id}'
-            tmp = misp_central.org_admin_connector.direct_call(relative_path, data={})
+            misp_central.org_admin_connector.direct_call(relative_path, data={})
             cluster = self.get_cluster(misp_central.org_admin_connector, lotr_test_relation['GalaxyClusterRelation']['galaxy_cluster_uuid'])
             relation = self.find_relation_in_cluster(lotr_test_relation['GalaxyClusterRelation'], cluster['GalaxyCluster']['GalaxyClusterRelation'])
             self.assertIs(relation, False)
         finally:
             pass
 
-    # @setup_cluster_env
-    # def test_edit_relation(self):
-    #     '''Test galaxy_cluster_relation edit'''
-    #     pass
+    @setup_relation_env
+    def test_edit_relation(self):
+        '''Test galaxy_cluster_relation edit'''
+        try:
+            misp_central = self.misp_instances.central_node
+            lotr_test_relation = self.get_test_relation_from_disk()
+            cluster = self.get_cluster(misp_central.org_admin_connector, lotr_test_relation['GalaxyClusterRelation']['galaxy_cluster_uuid'])
+            added_relation = self.find_relation_in_cluster(lotr_test_relation['GalaxyClusterRelation'], cluster['GalaxyCluster']['GalaxyClusterRelation'])
+            self.assertIsNot(added_relation, False)
+            relation_id = added_relation['id']
+            added_relation['distribution'] = '1'
+            added_relation['referenced_galaxy_cluster_type'] = 'do not belongs to'
+            added_relation['tags'] = 'estimative-language:likelihood-probability=\"very-unlikely\"'
+            del added_relation['Tag']
+            relative_path = f'/galaxy_cluster_relations/edit/{relation_id}'
+            misp_central.org_admin_connector.direct_call(relative_path, data=added_relation)
+            cluster = self.get_cluster(misp_central.org_admin_connector, added_relation['galaxy_cluster_uuid'])
+            edited_relation = self.find_relation_in_cluster(added_relation, cluster['GalaxyCluster']['GalaxyClusterRelation'])
+            self.assertIsNot(edited_relation, False)
+            self.compare_relation(added_relation, edited_relation)
+        finally:
+            pass
+
+
 
     def import_lotr_galaxies(self, instance):
         lotr_clusters = self.get_lotr_clusters_from_disk()
