@@ -22,6 +22,8 @@ LOTR_GALAXY_PATH = 'test-files/lotr-galaxy-cluster.json'
 LOTR_TEST_CLUSTER_PATH = 'test-files/lotr-test-cluster.json'
 LOTR_TEST_RELATION_PATH = 'test-files/lotr-test-relation.json'
 MITRE_TEST_GALAXY_PATH = 'test-files/test-mitre-mobile-attack-course-of-action.json'
+LOTR_EVENT_PATH = 'test-files/lotr-event.json'
+
 
 def setup_cluster_env(func):
     @functools.wraps(func)
@@ -41,12 +43,29 @@ def setup_relation_env(func):
     def wrapper(self,*args,**kwargs):
         try:
             misp_central = self.misp_instances.central_node
+            self.add_lotr_cluster(misp_central.org_admin_connector)
+            lotr_test_cluster = self.get_test_cluster_from_disk()
+            lotr_test_cluster['GalaxyCluster']['Galaxy']['uuid']
+
             relative_path = '/galaxy_cluster_relations/add'
             lotr_test_relation = self.get_test_relation_from_disk()
             tmp = misp_central.org_admin_connector.direct_call(relative_path, data=lotr_test_relation)
             self.assertNotIn('errors', tmp)
             func(self,*args,**kwargs)
         finally:
+            self.delete_lotr_cluster(misp_central.site_admin_connector)
+    return wrapper
+
+def setup_event_env(func):
+    @setup_cluster_env
+    @functools.wraps(func)
+    def wrapper(self,*args,**kwargs):
+        try:
+            misp_central = self.misp_instances.central_node
+            self.import_lotr_event(misp_central.org_admin_connector)
+            func(self,*args,**kwargs)
+        finally:
+            self.delete_lotr_event(misp_central.site_admin_connector)
             pass
     return wrapper
 
@@ -61,6 +80,7 @@ class TestClusterSync(unittest.TestCase):
         cls.lotr_test_cluster = {}
         cls.lotr_test_relation = {}
         cls.mitre_test_galaxy = {}
+        cls.lotr_event = {}
 
         #ready = False
         #while not ready:
@@ -125,6 +145,46 @@ class TestClusterSync(unittest.TestCase):
             # pass
             self.delete_lotr_clusters(misp1.site_admin_connector)
 
+
+    # def test_push_clusters(self):
+    #     '''Test galaxy_cluster push'''
+    #     try:
+    #         lotr_event = self.get_lotr_event_from_disk()
+    #         event_uuid = lotr_event['Event']['uuid']
+
+    #         source = self.misp_instances.instances[0]
+    #         dest = self.misp_instances.instances[1]
+
+    #         server = source.site_admin_connector.update_server({'push_galaxy_clusters': True}, source.synchronisations[dest.name].id)
+    #         self.assertTrue(server.push_galaxy_clusters)
+
+    #         # self.import_lotr_galaxies(source.org_admin_connector)
+    #         # self.import_lotr_event(source.org_admin_connector)
+
+    #         source_event = source.org_admin_connector.get_event(event_uuid)
+    #         source.site_admin_connector.server_push(source.synchronisations[dest.name], event_uuid)
+    #         time.sleep(10)
+
+    #         dest_event = dest.org_admin_connector.get_event(event_uuid)
+    #         self.assertEqual(source_event.objects[0].attributes[0].value, dest_event.objects[0].attributes[0].value)
+
+    #         source_cluster = self.get_cluster(source.org_admin_connector, event_uuid)
+    #         self.assertEqual(source_cluster['GalaxyCluster']['uuid'], event_uuid)
+    #         dest_cluster = self.get_cluster(dest.org_admin_connector, event_uuid)
+    #         self.assertEqual(dest_cluster['GalaxyCluster']['uuid'], event_uuid)
+    #         self.compare_cluster(source_cluster, dest_cluster, mirrorCheck=False, fromPull=True)
+
+    #         # misp1 = self.misp_instances.instances[0]
+    #         # misp1.site_admin_connector.server_pull(misp1.synchronisations[misp_central.name])
+    #         # time.sleep(15)
+    #         # pulled_clusters = self.get_clusters(misp1.org_admin_connector)
+    #         # self.compare_cluster_with_disk(pulled_clusters, mirrorCheck=False, fromPull=True)
+    #         # pulledClustersByUUID = { cluster['GalaxyCluster']['uuid']: cluster for cluster in pulled_clusters }
+
+    #     finally:
+    #         pass
+    #         # self.delete_lotr_clusters(misp1.site_admin_connector)
+
     @setup_cluster_env
     def test_import_clusters(self):
         '''Test galaxy_cluster import'''
@@ -141,14 +201,9 @@ class TestClusterSync(unittest.TestCase):
         try:
             misp_central = self.misp_instances.central_node
             lotr_test_cluster = self.get_test_cluster_from_disk()
-            galaxy_uuid = lotr_test_cluster['GalaxyCluster']['Galaxy']['uuid']
-            relative_path = f'/galaxy_clusters/add/{galaxy_uuid}'
-            misp_central.org_admin_connector.direct_call(relative_path, data=lotr_test_cluster)
-
-            uuid = lotr_test_cluster['GalaxyCluster']['uuid']
-            addedCluster = self.get_cluster(misp_central.org_admin_connector, uuid)
-            self.assertEqual(addedCluster['GalaxyCluster']['uuid'], uuid)
-            self.compare_cluster(lotr_test_cluster, addedCluster, mirrorCheck=True)
+            added_cluster = self.add_lotr_cluster(misp_central.org_admin_connector)
+            self.assertEqual(added_cluster['GalaxyCluster']['uuid'], lotr_test_cluster['GalaxyCluster']['uuid'])
+            self.compare_cluster(lotr_test_cluster, added_cluster, mirrorCheck=True)
         finally:
             pass
 
@@ -158,29 +213,26 @@ class TestClusterSync(unittest.TestCase):
         try:
             misp_central = self.misp_instances.central_node
             lotr_test_cluster = self.get_test_cluster_from_disk()
-            galaxy_uuid = lotr_test_cluster['GalaxyCluster']['Galaxy']['uuid']
-            relative_path = f'/galaxy_clusters/add/{galaxy_uuid}'
-            misp_central.org_admin_connector.direct_call(relative_path, data=lotr_test_cluster)
-            
-            uuid = lotr_test_cluster['GalaxyCluster']['uuid']
-            addedCluster = self.get_cluster(misp_central.org_admin_connector, uuid)
-            self.assertEqual(addedCluster['GalaxyCluster']['uuid'], uuid)
-            self.compare_cluster(lotr_test_cluster, addedCluster, mirrorCheck=True)
+            added_cluster = self.add_lotr_cluster(misp_central.org_admin_connector)
+            self.assertEqual(added_cluster['GalaxyCluster']['uuid'], lotr_test_cluster['GalaxyCluster']['uuid'])
+            self.compare_cluster(lotr_test_cluster, added_cluster, mirrorCheck=True)
 
-            addedCluster['GalaxyCluster']['description'] = 'baz'
-            addedCluster['GalaxyCluster']['distribution'] = 0
-            addedCluster['GalaxyCluster']['GalaxyElement'] = [
+            added_cluster['GalaxyCluster']['description'] = 'baz'
+            added_cluster['GalaxyCluster']['distribution'] = 0
+            added_cluster['GalaxyCluster']['GalaxyElement'] = [
                 {
                     "key": "weapon",
                     "value": "weaponModified"
                 }
             ]
+            uuid = lotr_test_cluster['GalaxyCluster']['uuid']
             relative_path = f'/galaxy_clusters/edit/{uuid}'
-            misp_central.org_admin_connector.direct_call(relative_path, data=addedCluster)
-            editedCluster = self.get_cluster(misp_central.org_admin_connector, uuid)
-            self.assertEqual(editedCluster['GalaxyCluster']['uuid'], uuid)
+            misp_central.org_admin_connector.direct_call(relative_path, data=added_cluster)
+            editedCluster = self.get_cluster(misp_central.org_admin_connector, lotr_test_cluster['GalaxyCluster']['uuid'])
+            self.assertEqual(editedCluster['GalaxyCluster']['uuid'], lotr_test_cluster['GalaxyCluster']['uuid'])
             self.assertEqual(editedCluster['GalaxyCluster']['description'], 'baz')
             self.assertEqual(editedCluster['GalaxyCluster']['distribution'], '0')
+            self.assertFalse(editedCluster['GalaxyCluster']['published'])
             self.assertNotEqual(editedCluster['GalaxyCluster']['version'], lotr_test_cluster['GalaxyCluster']['version'])
             self.assertEqual(len(editedCluster['GalaxyCluster']['GalaxyElement']), 1)
             self.assertEqual(editedCluster['GalaxyCluster']['GalaxyElement'][0]['value'], 'weaponModified')
@@ -189,21 +241,38 @@ class TestClusterSync(unittest.TestCase):
 
     @setup_cluster_env
     def test_delete_cluster(self):
+        '''Test galaxy_cluster delete'''
         try:
             misp_central = self.misp_instances.central_node
             lotr_test_cluster = self.get_test_cluster_from_disk()
-            galaxy_uuid = lotr_test_cluster['GalaxyCluster']['Galaxy']['uuid']
-            relative_path = f'/galaxy_clusters/add/{galaxy_uuid}'
-            misp_central.org_admin_connector.direct_call(relative_path, data=lotr_test_cluster)
-            cluster_uuid = lotr_test_cluster['GalaxyCluster']['uuid']
-            addedCluster = self.get_cluster(misp_central.org_admin_connector, cluster_uuid)
-            cluster_id = addedCluster['GalaxyCluster']['id']
-            self.assertEqual(addedCluster['GalaxyCluster']['uuid'], cluster_uuid)
+            added_cluster = self.add_lotr_cluster(misp_central.org_admin_connector)
+            self.assertEqual(added_cluster['GalaxyCluster']['uuid'], lotr_test_cluster['GalaxyCluster']['uuid'])
 
-            relative_path = f'/galaxy_clusters/delete/{cluster_id}'
+            deleted_cluster = self.delete_lotr_cluster(misp_central.org_admin_connector)
+            self.assertNotIn('uuid', deleted_cluster)
+        finally:
+            pass
+
+    @setup_cluster_env
+    def test_publish_cluster(self):
+        '''Test galaxy_cluster publish/unpublish'''
+        try:
+            misp_central = self.misp_instances.central_node
+            lotr_test_cluster = self.get_test_cluster_from_disk()
+            added_cluster = self.add_lotr_cluster(misp_central.org_admin_connector)
+            self.assertEqual(added_cluster['GalaxyCluster']['uuid'], lotr_test_cluster['GalaxyCluster']['uuid'])
+            self.assertFalse(added_cluster['GalaxyCluster']['published'])
+
+            uuid = added_cluster['GalaxyCluster']['uuid']
+            relative_path = f'/galaxy_clusters/publish/{uuid}'
             misp_central.org_admin_connector.direct_call(relative_path, data={})
-            deletedCluster = self.get_cluster(misp_central.org_admin_connector, cluster_uuid)
-            self.assertNotIn('uuid', deletedCluster)
+            published_cluster = self.get_cluster(misp_central.org_admin_connector, lotr_test_cluster['GalaxyCluster']['uuid'])
+            self.assertTrue(published_cluster['GalaxyCluster']['published'])
+
+            relative_path = f'/galaxy_clusters/unpublish/{uuid}'
+            misp_central.org_admin_connector.direct_call(relative_path, data={})
+            unpublished_cluster = self.get_cluster(misp_central.org_admin_connector, lotr_test_cluster['GalaxyCluster']['uuid'])
+            self.assertFalse(unpublished_cluster['GalaxyCluster']['published'])
         finally:
             pass
 
@@ -213,12 +282,10 @@ class TestClusterSync(unittest.TestCase):
         try:
             misp_central = self.misp_instances.central_node
             lotr_test_cluster = self.get_test_cluster_from_disk()
-            galaxy_uuid = lotr_test_cluster['GalaxyCluster']['Galaxy']['uuid']
-            relative_path = f'/galaxy_clusters/add/{galaxy_uuid}'
-            misp_central.org_admin_connector.direct_call(relative_path, data=lotr_test_cluster)
-            cluster_uuid = lotr_test_cluster['GalaxyCluster']['uuid']
-            added_cluster = self.get_cluster(misp_central.org_admin_connector, cluster_uuid)
-            self.assertEqual(added_cluster['GalaxyCluster']['uuid'], cluster_uuid)
+            added_cluster = self.add_lotr_cluster(misp_central.org_admin_connector)
+            self.assertEqual(added_cluster['GalaxyCluster']['uuid'], lotr_test_cluster['GalaxyCluster']['uuid'])
+            added_cluster = self.get_cluster(misp_central.org_admin_connector, lotr_test_cluster['GalaxyCluster']['uuid'])
+            self.assertEqual(added_cluster['GalaxyCluster']['uuid'], lotr_test_cluster['GalaxyCluster']['uuid'])
             tag_name = added_cluster['GalaxyCluster']['tag_name']
 
             filters = {
@@ -230,7 +297,7 @@ class TestClusterSync(unittest.TestCase):
             clusters_from_restsearch = clusters_from_restsearch[0]
             self.compare_cluster(added_cluster, clusters_from_restsearch, mirrorCheck=True)
         finally:
-            pass
+             pass
 
     @setup_relation_env
     def test_add_relation(self):
@@ -359,10 +426,48 @@ class TestClusterSync(unittest.TestCase):
             relative_path = f'galaxies/delete/{galaxy_id}'
             instance.direct_call(relative_path, {})
 
+    def add_lotr_cluster(self, instance):
+        lotr_test_cluster = self.get_test_cluster_from_disk()
+        galaxy_uuid = lotr_test_cluster['GalaxyCluster']['Galaxy']['uuid']
+        relative_path = f'/galaxy_clusters/add/{galaxy_uuid}'
+        instance.direct_call(relative_path, data=lotr_test_cluster)
+
+        uuid = lotr_test_cluster['GalaxyCluster']['uuid']
+        added_cluster = self.get_cluster(instance, uuid)
+        return added_cluster
+
+    def delete_lotr_cluster(self, instance):
+        lotr_test_cluster = self.get_test_cluster_from_disk()
+        uuid = lotr_test_cluster['GalaxyCluster']['uuid']
+        relative_path = f'/galaxy_clusters/delete/{uuid}'
+        instance.direct_call(relative_path, data={})
+        deleted_cluster = self.get_cluster(instance, lotr_test_cluster['GalaxyCluster']['uuid'])
+        return deleted_cluster
+
+    def import_lotr_event(self, instance):
+        lotr_event_dict = self.get_lotr_event_from_disk()
+        lotr_event = MISPEvent()
+        lotr_event.from_dict(**lotr_event_dict)
+        lotr_event = instance.add_event(lotr_event)
+        instance.publish(lotr_event)
+        lotr_event2 = instance.get_event(lotr_event.uuid)
+        self.assertEqual(lotr_event.objects[0].attributes[0].value, lotr_event2.objects[0].attributes[0].value)
+
     def delete_mitre_clusters(self, instance):
         mitre_uuids = "0282356a-1708-11e8-8f53-975633d5c03c"
         relative_path = f'galaxies/delete/{mitre_uuids}'
         instance.direct_call(relative_path, {})
+
+    def delete_lotr_event(self, instance):
+        lotr_event_dict = self.get_lotr_event_from_disk()
+        uuid = lotr_event_dict['Event']['uuid']
+        relative_path = f'events/delete/{uuid}'
+        instance.direct_call(relative_path, {})
+        relative_path = 'eventBlacklists/massDelete'
+        data = {
+            'ids': str([x for x in range(200)])
+        }
+        instance.direct_call(relative_path, data=data)
 
     def get_clusters(self, instance):
         filters = {
@@ -406,6 +511,12 @@ class TestClusterSync(unittest.TestCase):
             with open(MITRE_TEST_GALAXY_PATH) as f:
                 self.mitre_test_galaxy = json.load(f)
         return self.mitre_test_galaxy
+
+    def get_lotr_event_from_disk(self):
+        if len(self.lotr_event) == 0:
+            with open(LOTR_EVENT_PATH) as f:
+                self.lotr_event = json.load(f)
+        return self.lotr_event
 
     def compare_cluster_with_disk(self, clusters, mirrorCheck=False, fromPull=False):
         base_clusters = self.get_lotr_clusters_from_disk()
