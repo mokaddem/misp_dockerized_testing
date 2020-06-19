@@ -100,7 +100,7 @@ class TestClusterSync(unittest.TestCase):
 
     @setup_cluster_env
     def test_pull_clusters(self):
-        '''Test galaxy_cluster pull'''
+        '''Test galaxy_cluster pull all - Fetch all accessible-published-custom clusters'''
         try:
             misp_central = self.misp_instances.central_node
             misp1 = self.misp_instances.instances[0]
@@ -145,9 +145,24 @@ class TestClusterSync(unittest.TestCase):
             # pass
             self.delete_lotr_clusters(misp1.site_admin_connector)
 
+    @setup_cluster_env
+    def test_pull_update_clusters(self):
+        '''Test galaxy_cluster pull update - Fetch accessible-published-custom clusters attached to the events being pulled'''
+        pass
+
+    @setup_cluster_env
+    def test_pull_relevant_clusters(self):
+        '''Test galaxy_cluster pull relevant - Based on local custom-cluster tag, fetch all missing and outdated clusters from remote'''
+        pass
+
+    @setup_cluster_env
+    def test_pull_relevant_clusters(self):
+        '''Test galaxy_cluster pull relevant - Based on local custom-cluster tag, fetch all missing and outdated clusters from remote'''
+        pass
+
 
     # def test_push_clusters(self):
-    #     '''Test galaxy_cluster push'''
+    #     '''Test galaxy_cluster push - Push all the accessible-published-custom clusters'''
     #     try:
     #         lotr_event = self.get_lotr_event_from_disk()
     #         event_uuid = lotr_event['Event']['uuid']
@@ -184,6 +199,14 @@ class TestClusterSync(unittest.TestCase):
     #     finally:
     #         pass
     #         # self.delete_lotr_clusters(misp1.site_admin_connector)
+
+    def test_push_clusters(self):
+        '''Test galaxy_cluster push - Push all the accessible-published-custom clusters'''
+        pass
+
+    def test_push_simple_clusters(self):
+        '''Test galaxy_cluster push - Push only the clusters attached to the event'''
+        pass
 
     @setup_cluster_env
     def test_import_clusters(self):
@@ -255,7 +278,7 @@ class TestClusterSync(unittest.TestCase):
 
     @setup_cluster_env
     def test_publish_cluster(self):
-        '''Test galaxy_cluster publish/unpublish'''
+        '''Test galaxy_cluster publish/unpublish - Check that the published clusters is passed to connected MISP instances'''
         try:
             misp_central = self.misp_instances.central_node
             lotr_test_cluster = self.get_test_cluster_from_disk()
@@ -268,6 +291,7 @@ class TestClusterSync(unittest.TestCase):
             misp_central.org_admin_connector.direct_call(relative_path, data={})
             published_cluster = self.get_cluster(misp_central.org_admin_connector, lotr_test_cluster['GalaxyCluster']['uuid'])
             self.assertTrue(published_cluster['GalaxyCluster']['published'])
+            # TODO: Make sure the cluster is synced
 
             relative_path = f'/galaxy_clusters/unpublish/{uuid}'
             misp_central.org_admin_connector.direct_call(relative_path, data={})
