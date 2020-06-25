@@ -18,6 +18,7 @@ logging.disable(logging.CRITICAL)
 urllib3.disable_warnings()
 
 
+WAIT_AFTER_PULL = 10
 LOTR_GALAXY_PATH = 'test-files/lotr-galaxy-cluster.json'
 LOTR_TEST_CLUSTER_PATH = 'test-files/lotr-test-cluster.json'
 LOTR_TEST_RELATION_PATH = 'test-files/lotr-test-relation.json'
@@ -33,7 +34,7 @@ def setup_cluster_env(func):
             self.import_lotr_galaxies(misp_central.org_admin_connector)
             func(self,*args,**kwargs)
         finally:
-            self.delete_lotr_clusters(misp_central.site_admin_connector)
+            self.wipe_lotr_galaxies(misp_central.site_admin_connector)
             pass
     return wrapper
 
@@ -99,13 +100,13 @@ class TestClusterSync(unittest.TestCase):
     #        i.cleanup()
 
     @setup_cluster_env
-    def test_pull_clusters(self):
+    def test_pull(self):
         '''Test galaxy_cluster pull all - Fetch all accessible-published-custom clusters'''
         try:
             misp_central = self.misp_instances.central_node
             misp1 = self.misp_instances.instances[0]
             misp1.site_admin_connector.server_pull(misp1.synchronisations[misp_central.name])
-            time.sleep(15)
+            time.sleep(WAIT_AFTER_PULL)
             pulled_clusters = self.get_clusters(misp1.org_admin_connector)
             self.compare_cluster_with_disk(pulled_clusters, mirrorCheck=False, fromPull=True)
             pulledClustersByUUID = { cluster['GalaxyCluster']['uuid']: cluster for cluster in pulled_clusters }
@@ -114,95 +115,151 @@ class TestClusterSync(unittest.TestCase):
             lotr_test_cluster = self.get_lotr_clusters_from_disk()
             for cluster in lotr_test_cluster:
                 pulled_cluster = pulledClustersByUUID.get(cluster['GalaxyCluster']['uuid'], False)
-                if cluster['GalaxyCluster']['distribution'] == '0':
-                    self.assertIs(pulled_cluster, False) # your organisation only should not be pulled
-                if cluster['GalaxyCluster']['distribution'] == '1':
-                    self.assertEqual(pulled_cluster['GalaxyCluster']['distribution'], '0')
-                if cluster['GalaxyCluster']['distribution'] == '2':
-                    self.assertEqual(pulled_cluster['GalaxyCluster']['distribution'], '1')
-                if cluster['GalaxyCluster']['distribution'] == '4':
-                    pass
+                self.check_after_sync(cluster, pulled_cluster)
+        finally:
+            # pass
+            self.wipe_lotr_galaxies(misp1.site_admin_connector)
 
-            # Check for Orgc
-            for cluster in lotr_test_cluster:
-                pulled_cluster = pulledClustersByUUID.get(cluster['GalaxyCluster']['uuid'], False)
-                if pulled_cluster is not False:
-                    self.assertEqual(cluster['GalaxyCluster']['Orgc']['uuid'], cluster['GalaxyCluster']['Orgc']['uuid'])
-                    for relation in cluster['GalaxyCluster']['GalaxyClusterRelation']:
-                        pulled_relation = self.find_relation_in_cluster(relation, pulled_cluster['GalaxyCluster']['GalaxyClusterRelation'])
-                        if relation['distribution'] == '0':
-                            self.assertIs(pulled_relation, False) # your organisation only should not be pulled
-                        if relation['distribution'] == '1':
-                            self.assertEqual(pulled_relation['distribution'], '0')
-                        if relation['distribution'] == '2':
-                            self.assertEqual(pulled_relation['distribution'], '1')
-                        if relation['distribution'] == '4':
-                            pass
-                else:
-                    self.assertEqual(cluster['GalaxyCluster']['distribution'], '0')
+    @setup_event_env
+    def test_pull_simple_clusters(self):
+        '''Test galaxy_cluster pull single event - Fetch accessible-published-custom clusters attached to the event being pulled'''
+        try:
+            misp_central = self.misp_instances.central_node
+            misp1 = self.misp_instances.instances[0]
+
+            lotr_event = self.get_lotr_event_from_disk()
+            misp1.site_admin_connector.server_pull(misp1.synchronisations[misp_central.name], lotr_event['Event']['uuid'])
+            clusters_from_event = self.get_all_clusters_from_event(lotr_event)
+            time.sleep(WAIT_AFTER_PULL)
+            pulled_clusters = self.get_clusters(misp1.org_admin_connector)
+            pulled_clusters_by_uuid = { cluster['GalaxyCluster']['uuid']: cluster for cluster in pulled_clusters }
+
+            for cluster in clusters_from_event:
+                pulled_cluster = pulled_clusters_by_uuid.get(cluster['GalaxyCluster']['uuid'], False)
+                self.check_after_sync(cluster, pulled_cluster)
+        finally:
+            # pass
+            self.delete_lotr_event(misp1.site_admin_connector)
+            self.wipe_lotr_galaxies(misp1.site_admin_connector)
+
+    @setup_event_env
+    def test_pull_update_clusters(self):
+        '''Test galaxy_cluster pull update - Fetch accessible-published-custom clusters attached to the events being pulled'''
+        try:
+            misp_central = self.misp_instances.central_node
+            misp1 = self.misp_instances.instances[0]
+
+            lotr_event = self.get_lotr_event_from_disk()
+            misp1.site_admin_connector.server_pull(misp1.synchronisations[misp_central.name], lotr_event['Event']['uuid'])
+            # clusters_from_event = self.get_all_clusters_from_event(lotr_event)
+            time.sleep(WAIT_AFTER_PULL)
+            cluster_uuid_1 = '5eda0456-f4d8-40ab-9a77-3b280a00020f'
+            cluster_uuid_2 = '5eda0a53-1d98-4d01-ae06-40da0a00020f'
+            tag1 = f'misp-galaxy:fellowship-characters="{cluster_uuid_1}"'
+            tag2 = f'misp-galaxy:fellowship-characters="{cluster_uuid_2}"'
+            self.attach_tag(misp_central.org_admin_connector, lotr_event['Event']['uuid'], tag1)
+            self.attach_tag(misp_central.org_admin_connector, lotr_event['Event']['Attribute'][0]['uuid'], tag2)
+
+            misp1.site_admin_connector.server_pull(misp1.synchronisations[misp_central.name], lotr_event['Event']['uuid'])
+            time.sleep(WAIT_AFTER_PULL)
+            cluster1 = self.get_cluster(misp_central.org_admin_connector, cluster_uuid_1)
+            cluster2 = self.get_cluster(misp_central.org_admin_connector, cluster_uuid_2)
+            pulled_cluster1 = self.get_cluster(misp1.org_admin_connector, cluster_uuid_1)
+            pulled_cluster2 = self.get_cluster(misp1.org_admin_connector, cluster_uuid_2)
+            self.compare_cluster(cluster1, pulled_cluster1, mirrorCheck=False)
+            self.compare_cluster(cluster2, pulled_cluster2, mirrorCheck=False)
+            self.check_after_sync(cluster1, pulled_cluster1)
+            self.check_after_sync(cluster2, pulled_cluster2)
+        finally:
+            # pass
+            self.delete_lotr_event(misp1.site_admin_connector)
+            self.wipe_lotr_galaxies(misp1.site_admin_connector)
+
+
+    @setup_cluster_env
+    def test_pull_relevant_clusters(self):
+        try:
+            '''Test galaxy_cluster pull relevant - Based on local custom-cluster tag, fetch all missing and outdated clusters from remote'''
+            misp_central = self.misp_instances.central_node
+            misp1 = self.misp_instances.instances[0]
+
+            self.import_lotr_event(misp1.org_admin_connector)
+            cluster_uuid_1 = '5eda0456-f4d8-40ab-9a77-3b280a00020f'
+            cluster_uuid_2 = '5eda0a53-1d98-4d01-ae06-40da0a00020f'
+
+            cluster1 = self.get_cluster(misp1.org_admin_connector, cluster_uuid_1)
+            cluster2 = self.get_cluster(misp1.org_admin_connector, cluster_uuid_2)
+            self.assertFalse(cluster1)
+            self.assertFalse(cluster2)
+
+            relative_path = f'/servers/pull_relevant_clusters/{misp1.synchronisations[misp_central.name]}'
+            misp_central.org_admin_connector.direct_call(relative_path)
+            time.sleep(WAIT_AFTER_PULL)
+            cluster1 = self.get_cluster(misp_central.org_admin_connector, cluster_uuid_1)
+            cluster2 = self.get_cluster(misp_central.org_admin_connector, cluster_uuid_2)
+            pulled_cluster1 = self.get_cluster(misp1.org_admin_connector, cluster_uuid_1)
+            pulled_cluster2 = self.get_cluster(misp1.org_admin_connector, cluster_uuid_2)
+            self.compare_cluster(cluster1, pulled_cluster1, mirrorCheck=False)
+            self.compare_cluster(cluster2, pulled_cluster2, mirrorCheck=False)
+            self.check_after_sync(cluster1, pulled_cluster1)
+            self.check_after_sync(cluster2, pulled_cluster2)
+        finally:
+            # pass
+            self.delete_lotr_event(misp1.site_admin_connector)
+            self.wipe_lotr_galaxies(misp1.site_admin_connector)
+
+    def test_push_clusters(self):
+        try:
+            '''Test galaxy_cluster push all - Push all accessible-published-custom clusters before the events'''
+            source = self.misp_instances.instances[0]
+            dest = self.misp_instances.instances[1]
+            self.import_lotr_galaxies(source.org_admin_connector)
+            # # server = source.site_admin_connector.update_server({'push_galaxy_clusters': True}, source.synchronisations[dest.name].id)
+            source.site_admin_connector.server_push(source.synchronisations[dest.name])
+            time.sleep(WAIT_AFTER_PULL)
+
+            clusters = self.get_clusters(source.org_admin_connector)
+            pushed_clusters = self.get_clusters(dest.org_admin_connector)
+            pushed_clusters_by_uuid = { cluster['GalaxyCluster']['uuid']: cluster for cluster in pushed_clusters }
+
+            for cluster in clusters:
+                pushed_cluster = pushed_clusters_by_uuid.get(cluster['GalaxyCluster']['uuid'], False)
+                self.check_after_sync(cluster, pushed_cluster)
+        finally:
+            # pass
+            self.wipe_lotr_galaxies(source.site_admin_connector)
+            self.delete_lotr_event(dest.site_admin_connector)
+            self.wipe_lotr_galaxies(dest.site_admin_connector)
+
+
+    def test_push_clusters_along_with_event(self):
+        '''Test galaxy_cluster push - Push accessible-published-custom clusters attached to the event being pushed'''
+        try:
+            '''Test galaxy_cluster push all - Push all accessible-published-custom clusters before the events'''
+            source = self.misp_instances.instances[0]
+            dest = self.misp_instances.instances[1]
+            self.import_lotr_galaxies(source.org_admin_connector)
+            lotr_event = self.get_lotr_event_from_disk()
+            # server = source.site_admin_connector.update_server({'push_galaxy_clusters': True}, source.synchronisations[dest.name].id)
+            self.import_lotr_event(source.org_admin_connector)
+            source.site_admin_connector.server_push(source.synchronisations[dest.name], lotr_event['Event']['uuid'])
+            time.sleep(WAIT_AFTER_PULL)
+
+            clusters_from_event = self.get_all_clusters_from_event(lotr_event)
+            time.sleep(WAIT_AFTER_PULL)
+            pushed_clusters = self.get_clusters(dest.org_admin_connector)
+            pushed_clusters_by_uuid = { cluster['GalaxyCluster']['uuid']: cluster for cluster in pushed_clusters }
+
+            for cluster in clusters_from_event:
+                pushed_cluster = pushed_clusters_by_uuid.get(cluster['GalaxyCluster']['uuid'], False)
+                self.check_after_sync(cluster, pushed_cluster)
 
         finally:
             # pass
-            self.delete_lotr_clusters(misp1.site_admin_connector)
-
-    @setup_cluster_env
-    def test_pull_update_clusters(self):
-        '''Test galaxy_cluster pull update - Fetch accessible-published-custom clusters attached to the events being pulled'''
-        pass
-
-    @setup_cluster_env
-    def test_pull_relevant_clusters(self):
-        '''Test galaxy_cluster pull relevant - Based on local custom-cluster tag, fetch all missing and outdated clusters from remote'''
-        pass
-
-    @setup_cluster_env
-    def test_pull_relevant_clusters(self):
-        '''Test galaxy_cluster pull relevant - Based on local custom-cluster tag, fetch all missing and outdated clusters from remote'''
-        pass
-
-
-    # def test_push_clusters(self):
-    #     '''Test galaxy_cluster push - Push all the accessible-published-custom clusters'''
-    #     try:
-    #         lotr_event = self.get_lotr_event_from_disk()
-    #         event_uuid = lotr_event['Event']['uuid']
-
-    #         source = self.misp_instances.instances[0]
-    #         dest = self.misp_instances.instances[1]
-
-    #         server = source.site_admin_connector.update_server({'push_galaxy_clusters': True}, source.synchronisations[dest.name].id)
-    #         self.assertTrue(server.push_galaxy_clusters)
-
-    #         # self.import_lotr_galaxies(source.org_admin_connector)
-    #         # self.import_lotr_event(source.org_admin_connector)
-
-    #         source_event = source.org_admin_connector.get_event(event_uuid)
-    #         source.site_admin_connector.server_push(source.synchronisations[dest.name], event_uuid)
-    #         time.sleep(10)
-
-    #         dest_event = dest.org_admin_connector.get_event(event_uuid)
-    #         self.assertEqual(source_event.objects[0].attributes[0].value, dest_event.objects[0].attributes[0].value)
-
-    #         source_cluster = self.get_cluster(source.org_admin_connector, event_uuid)
-    #         self.assertEqual(source_cluster['GalaxyCluster']['uuid'], event_uuid)
-    #         dest_cluster = self.get_cluster(dest.org_admin_connector, event_uuid)
-    #         self.assertEqual(dest_cluster['GalaxyCluster']['uuid'], event_uuid)
-    #         self.compare_cluster(source_cluster, dest_cluster, mirrorCheck=False, fromPull=True)
-
-    #         # misp1 = self.misp_instances.instances[0]
-    #         # misp1.site_admin_connector.server_pull(misp1.synchronisations[misp_central.name])
-    #         # time.sleep(15)
-    #         # pulled_clusters = self.get_clusters(misp1.org_admin_connector)
-    #         # self.compare_cluster_with_disk(pulled_clusters, mirrorCheck=False, fromPull=True)
-    #         # pulledClustersByUUID = { cluster['GalaxyCluster']['uuid']: cluster for cluster in pulled_clusters }
-
-    #     finally:
-    #         pass
-    #         # self.delete_lotr_clusters(misp1.site_admin_connector)
-
-    def test_push_clusters(self):
-        '''Test galaxy_cluster push - Push all the accessible-published-custom clusters'''
-        pass
+            self.delete_lotr_event(source.site_admin_connector)
+            self.wipe_lotr_galaxies(source.site_admin_connector)
+            self.delete_lotr_event(dest.site_admin_connector)
+            self.wipe_lotr_galaxies(dest.site_admin_connector)
 
     def test_push_simple_clusters(self):
         '''Test galaxy_cluster push - Push only the clusters attached to the event'''
@@ -276,29 +333,40 @@ class TestClusterSync(unittest.TestCase):
         finally:
             pass
 
-    @setup_cluster_env
     def test_publish_cluster(self):
         '''Test galaxy_cluster publish/unpublish - Check that the published clusters is passed to connected MISP instances'''
         try:
-            misp_central = self.misp_instances.central_node
+            source = self.misp_instances.instances[0]
+            middle = self.misp_instances.instances[1]
+            dest = self.misp_instances.instances[2]
+
             lotr_test_cluster = self.get_test_cluster_from_disk()
-            added_cluster = self.add_lotr_cluster(misp_central.org_admin_connector)
+            added_cluster = self.add_lotr_cluster(source.org_admin_connector)
             self.assertEqual(added_cluster['GalaxyCluster']['uuid'], lotr_test_cluster['GalaxyCluster']['uuid'])
             self.assertFalse(added_cluster['GalaxyCluster']['published'])
 
             uuid = added_cluster['GalaxyCluster']['uuid']
             relative_path = f'/galaxy_clusters/publish/{uuid}'
-            misp_central.org_admin_connector.direct_call(relative_path, data={})
-            published_cluster = self.get_cluster(misp_central.org_admin_connector, lotr_test_cluster['GalaxyCluster']['uuid'])
+            source.org_admin_connector.direct_call(relative_path, data={})
+            published_cluster = self.get_cluster(source.org_admin_connector, lotr_test_cluster['GalaxyCluster']['uuid'])
             self.assertTrue(published_cluster['GalaxyCluster']['published'])
-            # TODO: Make sure the cluster is synced
+
+            # Make sure the cluster is synced
+            pushed_cluster_middle = self.get_cluster(middle.org_admin_connector, uuid)
+            time.sleep(WAIT_AFTER_PULL)
+            self.check_after_sync(published_cluster, pushed_cluster_middle)
+            pushed_cluster_dest = self.get_cluster(dest.org_admin_connector, uuid)
+            time.sleep(WAIT_AFTER_PULL)
+            self.check_after_sync(pushed_cluster_middle, pushed_cluster_dest)
 
             relative_path = f'/galaxy_clusters/unpublish/{uuid}'
-            misp_central.org_admin_connector.direct_call(relative_path, data={})
-            unpublished_cluster = self.get_cluster(misp_central.org_admin_connector, lotr_test_cluster['GalaxyCluster']['uuid'])
+            source.org_admin_connector.direct_call(relative_path, data={})
+            unpublished_cluster = self.get_cluster(source.org_admin_connector, lotr_test_cluster['GalaxyCluster']['uuid'])
             self.assertFalse(unpublished_cluster['GalaxyCluster']['published'])
         finally:
-            pass
+            self.wipe_lotr_galaxies(source.site_admin_connector)
+            self.wipe_lotr_galaxies(middle.site_admin_connector)
+            self.wipe_lotr_galaxies(dest.site_admin_connector)
 
     @setup_cluster_env
     def test_restsearch_cluster(self):
@@ -442,7 +510,7 @@ class TestClusterSync(unittest.TestCase):
         relative_path = 'galaxies/import'
         instance.direct_call(relative_path, data=lotr_clusters)
 
-    def delete_lotr_clusters(self, instance):
+    def wipe_lotr_galaxies(self, instance):
         lotr_uuids = ["93d4d641-a905-458a-83b4-18677a4ea534",
                       "fe1c605e-a8ca-47c9-83bf-a715ce6042dc",
                       "b8563f2f-dd0e-4c11-bdca-c2fe7774e779"]
@@ -506,7 +574,8 @@ class TestClusterSync(unittest.TestCase):
 
     def get_cluster(self, instance, uuid):
         relative_path = f'galaxy_clusters/view/{uuid}'
-        return instance.direct_call(relative_path)
+        call_rest = instance.direct_call(relative_path)
+        return False if 'errors' in call_rest else call_rest
 
     def get_relation(self, instance, relation_id):
         relative_path = f'galaxy_cluster_relations/view/{relation_id}'
@@ -598,8 +667,38 @@ class TestClusterSync(unittest.TestCase):
             toCheckTag2 = [ self.extract_useful_fields(t, to_check_tag) for t in relation2['Tag']]
             self.assertEqual(toCheckTag1, toCheckTag2)
 
+    def check_after_sync(self, cluster, synced_cluster):
+        if cluster['GalaxyCluster']['distribution'] == '0':
+            self.assertIs(synced_cluster, False) # your organisation only should not be pulled/pushed
+        elif cluster['GalaxyCluster']['distribution'] == '1':
+            self.assertEqual(synced_cluster['GalaxyCluster']['distribution'], '0')
+        elif cluster['GalaxyCluster']['distribution'] == '2':
+            self.assertEqual(synced_cluster['GalaxyCluster']['distribution'], '1')
+        elif cluster['GalaxyCluster']['distribution'] == '4':
+            pass
+
+        self.assertEqual(cluster['GalaxyCluster']['Orgc']['uuid'], cluster['GalaxyCluster']['Orgc']['uuid'])
+        for relation in cluster['GalaxyCluster']['GalaxyClusterRelation']:
+            synced_relation = self.find_relation_in_cluster(relation, synced_cluster['GalaxyCluster']['GalaxyClusterRelation'])
+            if relation['distribution'] == '0':
+                self.assertIs(synced_relation, False) # your organisation only should not be pulled
+            if relation['distribution'] == '1':
+                self.assertEqual(synced_relation['distribution'], '0')
+            if relation['distribution'] == '2':
+                self.assertEqual(synced_relation['distribution'], '1')
+            if relation['distribution'] == '4':
+                pass
+
     def extract_useful_fields(self, orig_dict, keys_to_extract):
         return { key: orig_dict[key] for key in keys_to_extract }
+
+    def attach_tag(self, instance, uuid, tag):
+        payload = {
+            "uuid": uuid,
+            "tag": tag,
+        }
+        relative_path = 'tags/attachTagToObject'
+        return instance.direct_call(relative_path, data=payload)
 
     def find_relation_in_cluster(self, relation, relations):
         for rel in relations:
@@ -609,4 +708,14 @@ class TestClusterSync(unittest.TestCase):
             ):
                 return rel
         return False
+
+    def get_all_clusters_from_event(self, event):
+        clusters = {}
+        for cluster in event['Event']['Galaxy']:
+            clusters[cluster['GalaxyCluster']['uuid']] = cluster
+        for cluster in event['Event']['Attribute']['Galaxy']:
+            clusters[cluster['GalaxyCluster']['uuid']] = cluster
+        for cluster in event['Event']['Object']['Attribute']['Galaxy']:
+            clusters[cluster['GalaxyCluster']['uuid']] = cluster
+        return clusters
 
