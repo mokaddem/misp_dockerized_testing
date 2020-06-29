@@ -18,7 +18,7 @@ logging.disable(logging.CRITICAL)
 urllib3.disable_warnings()
 
 
-WAIT_AFTER_PULL = 10
+WAIT_AFTER_PULL = 5
 LOTR_GALAXY_PATH = 'test-files/lotr-galaxy-cluster.json'
 LOTR_TEST_CLUSTER_PATH = 'test-files/lotr-test-cluster.json'
 LOTR_TEST_RELATION_PATH = 'test-files/lotr-test-relation.json'
@@ -668,12 +668,19 @@ class TestClusterSync(unittest.TestCase):
             self.assertEqual(toCheckTag1, toCheckTag2)
 
     def check_after_sync(self, cluster, synced_cluster):
+        if not cluster['GalaxyCluster']['published']:
+            self.assertIs(synced_cluster, False) # Non-published cluster should not be pulled/pushed
+            return
+
         if cluster['GalaxyCluster']['distribution'] == '0':
             self.assertIs(synced_cluster, False) # your organisation only should not be pulled/pushed
+            return
         elif cluster['GalaxyCluster']['distribution'] == '1':
             self.assertEqual(synced_cluster['GalaxyCluster']['distribution'], '0')
         elif cluster['GalaxyCluster']['distribution'] == '2':
             self.assertEqual(synced_cluster['GalaxyCluster']['distribution'], '1')
+        elif cluster['GalaxyCluster']['distribution'] == '3':
+            self.assertEqual(synced_cluster['GalaxyCluster']['distribution'], '3')
         elif cluster['GalaxyCluster']['distribution'] == '4':
             pass
 
@@ -686,6 +693,8 @@ class TestClusterSync(unittest.TestCase):
                 self.assertEqual(synced_relation['distribution'], '0')
             if relation['distribution'] == '2':
                 self.assertEqual(synced_relation['distribution'], '1')
+            if relation['distribution'] == '3':
+                self.assertEqual(synced_relation['distribution'], '3')
             if relation['distribution'] == '4':
                 pass
 
