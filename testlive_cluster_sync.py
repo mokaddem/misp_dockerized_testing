@@ -8,6 +8,7 @@ import urllib3  # type: ignore
 import logging
 from pprint import pprint
 import json
+import copy
 import functools
 
 from pymisp import MISPEvent, MISPObject, MISPSharingGroup, Distribution
@@ -127,18 +128,25 @@ class TestClusterSync(unittest.TestCase):
             misp_central = self.misp_instances.central_node
             misp1 = self.misp_instances.instances[0]
 
-            lotr_event = self.get_lotr_event_from_disk()
-            misp1.site_admin_connector.server_pull(misp1.synchronisations[misp_central.name], lotr_event['Event']['uuid'])
-            clusters_from_event = self.get_all_clusters_from_event(lotr_event)
+            lotr_event_disk = self.get_lotr_event_from_disk()
+            misp_central.site_admin_connector.toggle_global_pythonify()
+            lotr_event = misp_central.site_admin_connector.get_event(lotr_event_disk['Event']['uuid'])
+            misp_central.site_admin_connector.toggle_global_pythonify()
+            misp1.site_admin_connector.server_pull(misp1.synchronisations[misp_central.name], lotr_event['Event']['id'])
+            cluster_uuids_from_event = self.get_all_cluster_uuids_from_event(lotr_event)
+
+            # We have to fetch the full cluster to do the comparisoin as the data coming from the event has been massaged
+            clusters_from_event = self.get_clusters(misp_central.org_admin_connector, uuids=list(cluster_uuids_from_event))
+
             time.sleep(WAIT_AFTER_PULL)
             pulled_clusters = self.get_clusters(misp1.org_admin_connector)
             pulled_clusters_by_uuid = { cluster['GalaxyCluster']['uuid']: cluster for cluster in pulled_clusters }
+            self.assertLessEqual(len(pulled_clusters), len(clusters_from_event), 'Ensure we did not pull more cluster than we should')
 
             for cluster in clusters_from_event:
                 pulled_cluster = pulled_clusters_by_uuid.get(cluster['GalaxyCluster']['uuid'], False)
                 self.check_after_sync(cluster, pulled_cluster)
         finally:
-            # pass
             self.delete_lotr_event(misp1.site_admin_connector)
             self.wipe_lotr_galaxies(misp1.site_admin_connector)
 
@@ -245,13 +253,13 @@ class TestClusterSync(unittest.TestCase):
             source.site_admin_connector.server_push(source.synchronisations[dest.name], lotr_event['Event']['uuid'])
             time.sleep(WAIT_AFTER_PULL)
 
-            clusters_from_event = self.get_all_clusters_from_event(lotr_event)
+            clusters_from_event = self.get_all_cluster_uuids_from_event(lotr_event)
             time.sleep(WAIT_AFTER_PULL)
             pushed_clusters = self.get_clusters(dest.org_admin_connector)
             pushed_clusters_by_uuid = { cluster['GalaxyCluster']['uuid']: cluster for cluster in pushed_clusters }
 
-            for cluster in clusters_from_event:
-                pushed_cluster = pushed_clusters_by_uuid.get(cluster['GalaxyCluster']['uuid'], False)
+            for cluster_uuid, cluster in clusters_from_event.items():
+                pushed_cluster = pushed_clusters_by_uuid.get(cluster_uuid, False)
                 self.check_after_sync(cluster, pushed_cluster)
 
         finally:
@@ -538,10 +546,11 @@ class TestClusterSync(unittest.TestCase):
 
     def import_lotr_event(self, instance):
         lotr_event_dict = self.get_lotr_event_from_disk()
+        lotr_event_copy = copy.deepcopy(lotr_event_dict)
         lotr_event = MISPEvent()
-        lotr_event.from_dict(**lotr_event_dict)
+        lotr_event.from_dict(**lotr_event_copy)
         lotr_event = instance.add_event(lotr_event)
-        instance.publish(lotr_event)
+        instance.publish(lotr_event.uuid)
         lotr_event2 = instance.get_event(lotr_event.uuid)
         self.assertEqual(lotr_event.objects[0].attributes[0].value, lotr_event2.objects[0].attributes[0].value)
 
@@ -561,14 +570,16 @@ class TestClusterSync(unittest.TestCase):
         }
         instance.direct_call(relative_path, data=data)
 
-    def get_clusters(self, instance):
-        filters = {
-            "galaxy_uuid": [
+    def get_clusters(self, instance, uuids=None):
+        filters = {}
+        if uuids:
+            filters['uuid'] = uuids
+        else:
+            filters['galaxy_uuid']: [
                 "93d4d641-a905-458a-83b4-18677a4ea534",
                 "fe1c605e-a8ca-47c9-83bf-a715ce6042dc",
                 "b8563f2f-dd0e-4c11-bdca-c2fe7774e779"
             ]
-        }
         relative_path = 'galaxy_clusters/restSearch'
         return instance.direct_call(relative_path, data=filters)
 
@@ -669,32 +680,34 @@ class TestClusterSync(unittest.TestCase):
 
     def check_after_sync(self, cluster, synced_cluster):
         if not cluster['GalaxyCluster']['published']:
-            self.assertIs(synced_cluster, False) # Non-published cluster should not be pulled/pushed
+            self.assertIs(synced_cluster, False, 'Non-published cluster should not be pulled/pushed')
             return
 
         if cluster['GalaxyCluster']['distribution'] == '0':
-            self.assertIs(synced_cluster, False) # your organisation only should not be pulled/pushed
+            self.assertIs(synced_cluster, False, 'your organisation only should not be pulled/pushed')
             return
-        elif cluster['GalaxyCluster']['distribution'] == '1':
-            self.assertEqual(synced_cluster['GalaxyCluster']['distribution'], '0')
+
+        self.assertIsNot(synced_cluster, False, 'The cluster should have been synced')
+        if cluster['GalaxyCluster']['distribution'] == '1':
+            self.assertEqual(synced_cluster['GalaxyCluster']['distribution'], '0', 'Distribution level should have been downgraded')
         elif cluster['GalaxyCluster']['distribution'] == '2':
-            self.assertEqual(synced_cluster['GalaxyCluster']['distribution'], '1')
+            self.assertEqual(synced_cluster['GalaxyCluster']['distribution'], '1', 'Distribution level should have been downgraded')
         elif cluster['GalaxyCluster']['distribution'] == '3':
-            self.assertEqual(synced_cluster['GalaxyCluster']['distribution'], '3')
+            self.assertEqual(synced_cluster['GalaxyCluster']['distribution'], '3', 'Distribution level should not have been downgraded')
         elif cluster['GalaxyCluster']['distribution'] == '4':
             pass
 
-        self.assertEqual(cluster['GalaxyCluster']['Orgc']['uuid'], cluster['GalaxyCluster']['Orgc']['uuid'])
+        self.assertEqual(cluster['GalaxyCluster']['Orgc']['uuid'], cluster['GalaxyCluster']['Orgc']['uuid'], 'Creator organsation should stay the same')
         for relation in cluster['GalaxyCluster']['GalaxyClusterRelation']:
             synced_relation = self.find_relation_in_cluster(relation, synced_cluster['GalaxyCluster']['GalaxyClusterRelation'])
             if relation['distribution'] == '0':
-                self.assertIs(synced_relation, False) # your organisation only should not be pulled
+                self.assertIs(synced_relation, False, 'your organisation only should not be pulled')
             if relation['distribution'] == '1':
-                self.assertEqual(synced_relation['distribution'], '0')
+                self.assertEqual(synced_relation['distribution'], '0', 'Distribution level should have been downgraded')
             if relation['distribution'] == '2':
-                self.assertEqual(synced_relation['distribution'], '1')
+                self.assertEqual(synced_relation['distribution'], '1', 'Distribution level should have been downgraded')
             if relation['distribution'] == '3':
-                self.assertEqual(synced_relation['distribution'], '3')
+                self.assertEqual(synced_relation['distribution'], '3', 'Distribution level should not have been downgraded')
             if relation['distribution'] == '4':
                 pass
 
@@ -718,13 +731,22 @@ class TestClusterSync(unittest.TestCase):
                 return rel
         return False
 
-    def get_all_clusters_from_event(self, event):
-        clusters = {}
-        for cluster in event['Event']['Galaxy']:
-            clusters[cluster['GalaxyCluster']['uuid']] = cluster
-        for cluster in event['Event']['Attribute']['Galaxy']:
-            clusters[cluster['GalaxyCluster']['uuid']] = cluster
-        for cluster in event['Event']['Object']['Attribute']['Galaxy']:
-            clusters[cluster['GalaxyCluster']['uuid']] = cluster
+    def get_all_cluster_uuids_from_event(self, event):
+        clusters = set()
+        for galaxy in event['Event'].get('Galaxy', []):
+            for cluster in galaxy['GalaxyCluster']:
+                # clusters[cluster['uuid']] = cluster
+                clusters.add(cluster['uuid'])
+        for attribute in event['Event'].get('Attribute', []):
+            for galaxy in attribute.get('Galaxy', []):
+                for cluster in galaxy['GalaxyCluster']:
+                    # clusters[cluster['uuid']] = cluster
+                    clusters.add(cluster['uuid'])
+        for mispobject in event['Event'].get('Object', []):
+            for attribute in mispobject['Attribute']:
+                for galaxy in attribute.get('Galaxy', []):
+                    for cluster in galaxy['GalaxyCluster']:
+                        # clusters[cluster['uuid']] = cluster
+                        clusters.add(cluster['uuid'])
         return clusters
 

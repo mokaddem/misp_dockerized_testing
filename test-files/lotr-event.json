@@ -91,6 +91,7 @@
                         "orgc_id": "1",
                         "default": false,
                         "locked": false,
+                        "published": true,
                         "extends_uuid": "",
                         "extends_version": null,
                         "meta": {},
@@ -209,6 +210,7 @@
                                         "orgc_id": "1",
                                         "default": false,
                                         "locked": false,
+                                        "published": true,
                                         "extends_uuid": "",
                                         "extends_version": null,
                                         "meta": {
