@@ -136,7 +136,7 @@ class TestClusterSync(unittest.TestCase):
             misp1.site_admin_connector.server_pull(misp1.synchronisations[misp_central.name], lotr_event['Event']['id'])
             cluster_uuids_from_event = self.get_all_cluster_uuids_from_event(lotr_event)
 
-            # We have to fetch the full cluster to do the comparisoin as the data coming from the event has been massaged
+            # We have to fetch the full cluster to do the comparison as the data coming from the event has been massaged
             clusters_from_event = self.get_clusters(misp_central.org_admin_connector, uuids=list(cluster_uuids_from_event))
 
             time.sleep(WAIT_AFTER_SYNC)
@@ -259,24 +259,30 @@ class TestClusterSync(unittest.TestCase):
         dest = self.misp_instances.instances[1]
         try:
             self.import_lotr_galaxies(source.org_admin_connector)
-            lotr_event = self.get_lotr_event_from_disk()
             self.import_lotr_event(source.org_admin_connector)
-            dest.site_admin_connector.update_server({'push_galaxy_clusters': False}, dest.id) # Avoid further propagation
-            source.site_admin_connector.server_push(source.synchronisations[dest.name], lotr_event['Event']['uuid'])
+            lotr_event_disk = self.get_lotr_event_from_disk()
+            source.site_admin_connector.toggle_global_pythonify()
+            lotr_event = source.site_admin_connector.get_event(lotr_event_disk['Event']['uuid'])
+            source.site_admin_connector.toggle_global_pythonify()
+
+            dest.site_admin_connector.update_server({'push_galaxy_clusters': False}, source.synchronisations[dest.name].id) # Avoid further propagation
+            source.site_admin_connector.server_push(source.synchronisations[dest.name], lotr_event['Event']['id'])
             time.sleep(WAIT_AFTER_SYNC)
 
-            clusters_from_event = self.get_all_cluster_uuids_from_event(lotr_event)
-            time.sleep(WAIT_AFTER_SYNC)
-            pushed_clusters = self.get_clusters(dest.org_admin_connector)
+            cluster_uuids_from_event = self.get_all_cluster_uuids_from_event(lotr_event)
+            # We have to fetch the full cluster to do the comparison as the data coming from the event has been massaged
+            clusters_from_event = self.get_clusters(source.org_admin_connector, uuids=list(cluster_uuids_from_event))
+
+            pushed_clusters = self.get_clusters(dest.org_admin_connector, uuids=list(cluster_uuids_from_event))
             pushed_clusters_by_uuid = { cluster['GalaxyCluster']['uuid']: cluster for cluster in pushed_clusters }
 
-            for cluster_uuid, cluster in clusters_from_event.items():
-                pushed_cluster = pushed_clusters_by_uuid.get(cluster_uuid, False)
+            for cluster in clusters_from_event:
+                pushed_cluster = pushed_clusters_by_uuid.get(cluster['GalaxyCluster']['uuid'], False)
                 self.check_after_sync(cluster, pushed_cluster, isPush=True)
+                self.compare_cluster(cluster, pushed_cluster, mirrorCheck=False, isPush=True)
 
         finally:
-            # pass
-            dest.site_admin_connector.update_server({'push_galaxy_clusters': True}, dest.id)
+            dest.site_admin_connector.update_server({'push_galaxy_clusters': True}, source.synchronisations[dest.name].id)
             self.delete_lotr_event(source.site_admin_connector)
             self.wipe_lotr_galaxies(source.site_admin_connector)
             self.delete_lotr_event(dest.site_admin_connector)
