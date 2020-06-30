@@ -133,7 +133,7 @@ class TestClusterSync(unittest.TestCase):
             lotr_event = misp_central.site_admin_connector.get_event(lotr_event_disk['Event']['uuid'])
             misp_central.site_admin_connector.toggle_global_pythonify()
 
-            misp1.site_admin_connector.server_pull(misp1.synchronisations[misp_central.name], lotr_event['Event']['id'])
+            misp1.site_admin_connector.server_pull(misp1.synchronisations[misp_central.name].id, lotr_event['Event']['id'])
             cluster_uuids_from_event = self.get_all_cluster_uuids_from_event(lotr_event)
 
             # We have to fetch the full cluster to do the comparisoin as the data coming from the event has been massaged
@@ -163,7 +163,7 @@ class TestClusterSync(unittest.TestCase):
             lotr_event = misp_central.site_admin_connector.get_event(lotr_event_disk['Event']['uuid'])
             misp_central.site_admin_connector.toggle_global_pythonify()
 
-            misp1.site_admin_connector.server_pull(misp1.synchronisations[misp_central.name], lotr_event['Event']['id'])
+            misp1.site_admin_connector.server_pull(misp1.synchronisations[misp_central.name].id, lotr_event['Event']['id'])
             time.sleep(WAIT_AFTER_PULL)
 
             cluster_uuid_1 = '5eda0456-f4d8-40ab-9a77-3b280a00020f'
@@ -177,7 +177,7 @@ class TestClusterSync(unittest.TestCase):
             self.attach_tag(misp_central.org_admin_connector, lotr_event['Event']['Object'][0]['Attribute'][0]['uuid'], tag3)
             misp_central.org_admin_connector.publish(lotr_event_disk['Event']['uuid'])
 
-            misp1.site_admin_connector.server_pull(misp1.synchronisations[misp_central.name], lotr_event['Event']['id'])
+            misp1.site_admin_connector.server_pull(misp1.synchronisations[misp_central.name].id, lotr_event['Event']['id'])
             time.sleep(WAIT_AFTER_PULL)
 
             cluster1 = self.get_cluster(misp_central.org_admin_connector, cluster_uuid_1)
@@ -205,27 +205,26 @@ class TestClusterSync(unittest.TestCase):
             misp_central = self.misp_instances.central_node
             misp1 = self.misp_instances.instances[0]
 
+            lotr_event_disk = self.get_lotr_event_from_disk()
             self.import_lotr_event(misp1.org_admin_connector)
-            cluster_uuid_1 = '5eda0456-f4d8-40ab-9a77-3b280a00020f'
-            cluster_uuid_2 = '5eda0a53-1d98-4d01-ae06-40da0a00020f'
+            misp1.org_admin_connector.toggle_global_pythonify()
+            lotr_event = misp1.org_admin_connector.get_event(lotr_event_disk['Event']['uuid'])
+            misp1.org_admin_connector.toggle_global_pythonify()
 
-            cluster1 = self.get_cluster(misp1.org_admin_connector, cluster_uuid_1)
-            cluster2 = self.get_cluster(misp1.org_admin_connector, cluster_uuid_2)
-            self.assertFalse(cluster1, 'Cluster should not be on the instance')
-            self.assertFalse(cluster2, 'Cluster should not be on the instance')
+            cluster_uuids_from_event = self.get_all_cluster_uuids_from_event(lotr_event)
+            for cluster_uuid in cluster_uuids_from_event:
+                cluster = self.get_cluster(misp1.org_admin_connector, cluster_uuid)
+                self.assertFalse(cluster, 'Cluster should not be on the instance')
 
-            relative_path = f'/servers/pull_relevant_clusters/{misp1.synchronisations[misp_central.name]}'
-            misp_central.org_admin_connector.direct_call(relative_path)
+            relative_path = f'/servers/pull/{misp1.synchronisations[misp_central.name].id}/pull_relevant_clusters'
+            misp1.site_admin_connector.direct_call(relative_path)
             time.sleep(WAIT_AFTER_PULL)
 
-            cluster1 = self.get_cluster(misp_central.org_admin_connector, cluster_uuid_1)
-            cluster2 = self.get_cluster(misp_central.org_admin_connector, cluster_uuid_2)
-            pulled_cluster1 = self.get_cluster(misp1.org_admin_connector, cluster_uuid_1)
-            pulled_cluster2 = self.get_cluster(misp1.org_admin_connector, cluster_uuid_2)
-            self.check_after_sync(cluster1, pulled_cluster1)
-            self.check_after_sync(cluster2, pulled_cluster2)
-            self.compare_cluster(cluster1, pulled_cluster1, mirrorCheck=False, fromPull=True)
-            self.compare_cluster(cluster2, pulled_cluster2, mirrorCheck=False, fromPull=True)
+            for cluster_uuid in cluster_uuids_from_event:
+                cluster = self.get_cluster(misp1.org_admin_connector, cluster_uuid)
+                pulled_cluster = self.get_cluster(misp1.org_admin_connector, cluster_uuid)
+                self.check_after_sync(cluster, pulled_cluster)
+                self.compare_cluster(cluster, pulled_cluster, mirrorCheck=False, fromPull=True)
         finally:
             # pass
             self.delete_lotr_event(misp1.site_admin_connector)
@@ -561,12 +560,13 @@ class TestClusterSync(unittest.TestCase):
 
     def import_lotr_event(self, instance):
         lotr_event_dict = self.get_lotr_event_from_disk()
+        event_uuid = lotr_event_dict['Event']['uuid']
         lotr_event_copy = copy.deepcopy(lotr_event_dict)
         lotr_event = MISPEvent()
         lotr_event.from_dict(**lotr_event_copy)
         lotr_event = instance.add_event(lotr_event)
-        instance.publish(lotr_event.uuid)
-        lotr_event2 = instance.get_event(lotr_event.uuid)
+        instance.publish(event_uuid)
+        lotr_event2 = instance.get_event(event_uuid)
         self.assertEqual(lotr_event.objects[0].attributes[0].value, lotr_event2.objects[0].attributes[0].value)
 
     def delete_mitre_clusters(self, instance):
