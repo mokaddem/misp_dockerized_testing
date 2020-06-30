@@ -19,7 +19,7 @@ logging.disable(logging.CRITICAL)
 urllib3.disable_warnings()
 
 
-WAIT_AFTER_PULL = 5
+WAIT_AFTER_SYNC = 5
 LOTR_GALAXY_PATH = 'test-files/lotr-galaxy-cluster.json'
 LOTR_TEST_CLUSTER_PATH = 'test-files/lotr-test-cluster.json'
 LOTR_TEST_RELATION_PATH = 'test-files/lotr-test-relation.json'
@@ -107,9 +107,9 @@ class TestClusterSync(unittest.TestCase):
             misp_central = self.misp_instances.central_node
             misp1 = self.misp_instances.instances[0]
             misp1.site_admin_connector.server_pull(misp1.synchronisations[misp_central.name])
-            time.sleep(WAIT_AFTER_PULL)
+            time.sleep(WAIT_AFTER_SYNC)
             pulled_clusters = self.get_clusters(misp1.org_admin_connector)
-            self.compare_cluster_with_disk(pulled_clusters, mirrorCheck=False, fromPull=True)
+            self.compare_cluster_with_disk(pulled_clusters, mirrorCheck=False, isPull=True)
             pulledClustersByUUID = { cluster['GalaxyCluster']['uuid']: cluster for cluster in pulled_clusters }
 
             # Check that distribution has been adpated accordingly
@@ -133,13 +133,13 @@ class TestClusterSync(unittest.TestCase):
             lotr_event = misp_central.site_admin_connector.get_event(lotr_event_disk['Event']['uuid'])
             misp_central.site_admin_connector.toggle_global_pythonify()
 
-            misp1.site_admin_connector.server_pull(misp1.synchronisations[misp_central.name].id, lotr_event['Event']['id'])
+            misp1.site_admin_connector.server_pull(misp1.synchronisations[misp_central.name], lotr_event['Event']['id'])
             cluster_uuids_from_event = self.get_all_cluster_uuids_from_event(lotr_event)
 
             # We have to fetch the full cluster to do the comparisoin as the data coming from the event has been massaged
             clusters_from_event = self.get_clusters(misp_central.org_admin_connector, uuids=list(cluster_uuids_from_event))
 
-            time.sleep(WAIT_AFTER_PULL)
+            time.sleep(WAIT_AFTER_SYNC)
             pulled_clusters = self.get_clusters(misp1.org_admin_connector)
             pulled_clusters_by_uuid = { cluster['GalaxyCluster']['uuid']: cluster for cluster in pulled_clusters }
             self.assertLessEqual(len(pulled_clusters), len(clusters_from_event), 'Ensure we did not pull more cluster than we should')
@@ -163,8 +163,8 @@ class TestClusterSync(unittest.TestCase):
             lotr_event = misp_central.site_admin_connector.get_event(lotr_event_disk['Event']['uuid'])
             misp_central.site_admin_connector.toggle_global_pythonify()
 
-            misp1.site_admin_connector.server_pull(misp1.synchronisations[misp_central.name].id, lotr_event['Event']['id'])
-            time.sleep(WAIT_AFTER_PULL)
+            misp1.site_admin_connector.server_pull(misp1.synchronisations[misp_central.name], lotr_event['Event']['id'])
+            time.sleep(WAIT_AFTER_SYNC)
 
             cluster_uuid_1 = '5eda0456-f4d8-40ab-9a77-3b280a00020f'
             cluster_uuid_2 = '5eda0a53-1d98-4d01-ae06-40da0a00020f'
@@ -177,8 +177,8 @@ class TestClusterSync(unittest.TestCase):
             self.attach_tag(misp_central.org_admin_connector, lotr_event['Event']['Object'][0]['Attribute'][0]['uuid'], tag3)
             misp_central.org_admin_connector.publish(lotr_event_disk['Event']['uuid'])
 
-            misp1.site_admin_connector.server_pull(misp1.synchronisations[misp_central.name].id, lotr_event['Event']['id'])
-            time.sleep(WAIT_AFTER_PULL)
+            misp1.site_admin_connector.server_pull(misp1.synchronisations[misp_central.name], lotr_event['Event']['id'])
+            time.sleep(WAIT_AFTER_SYNC)
 
             cluster1 = self.get_cluster(misp_central.org_admin_connector, cluster_uuid_1)
             cluster2 = self.get_cluster(misp_central.org_admin_connector, cluster_uuid_2)
@@ -189,9 +189,9 @@ class TestClusterSync(unittest.TestCase):
             self.check_after_sync(cluster1, pulled_cluster1)
             self.check_after_sync(cluster2, pulled_cluster2)
             self.check_after_sync(cluster3, pulled_cluster3)
-            self.compare_cluster(cluster1, pulled_cluster1, mirrorCheck=False, fromPull=True)
-            self.compare_cluster(cluster2, pulled_cluster2, mirrorCheck=False, fromPull=True)
-            self.compare_cluster(cluster3, pulled_cluster3, mirrorCheck=False, fromPull=True)
+            self.compare_cluster(cluster1, pulled_cluster1, mirrorCheck=False, isPull=True)
+            self.compare_cluster(cluster2, pulled_cluster2, mirrorCheck=False, isPull=True)
+            self.compare_cluster(cluster3, pulled_cluster3, mirrorCheck=False, isPull=True)
         finally:
             # pass
             self.delete_lotr_event(misp1.site_admin_connector)
@@ -214,31 +214,30 @@ class TestClusterSync(unittest.TestCase):
             cluster_uuids_from_event = self.get_all_cluster_uuids_from_event(lotr_event)
             for cluster_uuid in cluster_uuids_from_event:
                 cluster = self.get_cluster(misp1.org_admin_connector, cluster_uuid)
-                self.assertFalse(cluster, 'Cluster should not be on the instance')
+                self.assertFalse(cluster, 'Test environment faulty. Cluster should not be on the instance')
 
             relative_path = f'/servers/pull/{misp1.synchronisations[misp_central.name].id}/pull_relevant_clusters'
             misp1.site_admin_connector.direct_call(relative_path)
-            time.sleep(WAIT_AFTER_PULL)
+            time.sleep(WAIT_AFTER_SYNC)
 
             for cluster_uuid in cluster_uuids_from_event:
                 cluster = self.get_cluster(misp1.org_admin_connector, cluster_uuid)
                 pulled_cluster = self.get_cluster(misp1.org_admin_connector, cluster_uuid)
                 self.check_after_sync(cluster, pulled_cluster)
-                self.compare_cluster(cluster, pulled_cluster, mirrorCheck=False, fromPull=True)
+                self.compare_cluster(cluster, pulled_cluster, mirrorCheck=False, isPull=True)
         finally:
-            # pass
             self.delete_lotr_event(misp1.site_admin_connector)
             self.wipe_lotr_galaxies(misp1.site_admin_connector)
 
     def test_push_clusters(self):
+        source = self.misp_instances.instances[0]
+        dest = self.misp_instances.instances[1]
         try:
             '''Test galaxy_cluster push all - Push all accessible-published-custom clusters before the events'''
-            source = self.misp_instances.instances[0]
-            dest = self.misp_instances.instances[1]
             self.import_lotr_galaxies(source.org_admin_connector)
-            # # server = source.site_admin_connector.update_server({'push_galaxy_clusters': True}, source.synchronisations[dest.name].id)
-            source.site_admin_connector.server_push(source.synchronisations[dest.name])
-            time.sleep(WAIT_AFTER_PULL)
+            dest.site_admin_connector.update_server({'push_galaxy_clusters': False}, source.synchronisations[dest.name].id) # Avoid further propagation
+            source.site_admin_connector.server_push(source.synchronisations[dest.name], 'full')
+            time.sleep(WAIT_AFTER_SYNC)
 
             clusters = self.get_clusters(source.org_admin_connector)
             pushed_clusters = self.get_clusters(dest.org_admin_connector)
@@ -246,46 +245,42 @@ class TestClusterSync(unittest.TestCase):
 
             for cluster in clusters:
                 pushed_cluster = pushed_clusters_by_uuid.get(cluster['GalaxyCluster']['uuid'], False)
-                self.check_after_sync(cluster, pushed_cluster)
+                self.check_after_sync(cluster, pushed_cluster, isPush=True)
+                self.compare_cluster(cluster, pushed_cluster, mirrorCheck=False, isPush=True)
         finally:
-            # pass
+            dest.site_admin_connector.update_server({'push_galaxy_clusters': True}, source.synchronisations[dest.name].id)
             self.wipe_lotr_galaxies(source.site_admin_connector)
-            self.delete_lotr_event(dest.site_admin_connector)
             self.wipe_lotr_galaxies(dest.site_admin_connector)
 
 
-    def test_push_clusters_along_with_event(self):
+    def test_push_simple_clusters(self):
         '''Test galaxy_cluster push - Push accessible-published-custom clusters attached to the event being pushed'''
+        source = self.misp_instances.instances[0]
+        dest = self.misp_instances.instances[1]
         try:
-            '''Test galaxy_cluster push all - Push all accessible-published-custom clusters before the events'''
-            source = self.misp_instances.instances[0]
-            dest = self.misp_instances.instances[1]
             self.import_lotr_galaxies(source.org_admin_connector)
             lotr_event = self.get_lotr_event_from_disk()
-            # server = source.site_admin_connector.update_server({'push_galaxy_clusters': True}, source.synchronisations[dest.name].id)
             self.import_lotr_event(source.org_admin_connector)
+            dest.site_admin_connector.update_server({'push_galaxy_clusters': False}, dest.id) # Avoid further propagation
             source.site_admin_connector.server_push(source.synchronisations[dest.name], lotr_event['Event']['uuid'])
-            time.sleep(WAIT_AFTER_PULL)
+            time.sleep(WAIT_AFTER_SYNC)
 
             clusters_from_event = self.get_all_cluster_uuids_from_event(lotr_event)
-            time.sleep(WAIT_AFTER_PULL)
+            time.sleep(WAIT_AFTER_SYNC)
             pushed_clusters = self.get_clusters(dest.org_admin_connector)
             pushed_clusters_by_uuid = { cluster['GalaxyCluster']['uuid']: cluster for cluster in pushed_clusters }
 
             for cluster_uuid, cluster in clusters_from_event.items():
                 pushed_cluster = pushed_clusters_by_uuid.get(cluster_uuid, False)
-                self.check_after_sync(cluster, pushed_cluster)
+                self.check_after_sync(cluster, pushed_cluster, isPush=True)
 
         finally:
             # pass
+            dest.site_admin_connector.update_server({'push_galaxy_clusters': True}, dest.id)
             self.delete_lotr_event(source.site_admin_connector)
             self.wipe_lotr_galaxies(source.site_admin_connector)
             self.delete_lotr_event(dest.site_admin_connector)
             self.wipe_lotr_galaxies(dest.site_admin_connector)
-
-    def test_push_simple_clusters(self):
-        '''Test galaxy_cluster push - Push only the clusters attached to the event'''
-        pass
 
     @setup_cluster_env
     def test_import_clusters(self):
@@ -375,11 +370,11 @@ class TestClusterSync(unittest.TestCase):
 
             # Make sure the cluster is synced
             pushed_cluster_middle = self.get_cluster(middle.org_admin_connector, uuid)
-            time.sleep(WAIT_AFTER_PULL)
-            self.check_after_sync(published_cluster, pushed_cluster_middle)
+            time.sleep(WAIT_AFTER_SYNC)
+            self.check_after_sync(published_cluster, pushed_cluster_middle, isPush=True)
             pushed_cluster_dest = self.get_cluster(dest.org_admin_connector, uuid)
-            time.sleep(WAIT_AFTER_PULL)
-            self.check_after_sync(pushed_cluster_middle, pushed_cluster_dest)
+            time.sleep(WAIT_AFTER_SYNC)
+            self.check_after_sync(pushed_cluster_middle, pushed_cluster_dest, isPush=True)
 
             relative_path = f'/galaxy_clusters/unpublish/{uuid}'
             source.org_admin_connector.direct_call(relative_path, data={})
@@ -522,7 +517,7 @@ class TestClusterSync(unittest.TestCase):
                 for rel1 in to_check_relation_mitre:
                     rel2 = self.find_relation_in_cluster(rel1, cluster['GalaxyCluster']['GalaxyClusterRelation'])
                     self.assertIsNot(rel2, False)
-                    self.compare_relation(rel1, rel2, mirrorCheck=False, fromPull=False)
+                    self.compare_relation(rel1, rel2, mirrorCheck=False, isPull=False)
 
         finally:
             self.delete_mitre_clusters(misp_central.site_admin_connector)
@@ -590,7 +585,7 @@ class TestClusterSync(unittest.TestCase):
         if uuids:
             filters['uuid'] = uuids
         else:
-            filters['galaxy_uuid']: [
+            filters['galaxy_uuid'] = [
                 "93d4d641-a905-458a-83b4-18677a4ea534",
                 "fe1c605e-a8ca-47c9-83bf-a715ce6042dc",
                 "b8563f2f-dd0e-4c11-bdca-c2fe7774e779"
@@ -637,7 +632,7 @@ class TestClusterSync(unittest.TestCase):
                 self.lotr_event = json.load(f)
         return self.lotr_event
 
-    def compare_cluster_with_disk(self, clusters, mirrorCheck=False, fromPull=False):
+    def compare_cluster_with_disk(self, clusters, mirrorCheck=False, isPull=False):
         base_clusters = self.get_lotr_clusters_from_disk()
         clusters_by_uuid = { cluster['GalaxyCluster']['uuid']: cluster for cluster in clusters }
         for base_cluster in base_clusters:
@@ -651,18 +646,21 @@ class TestClusterSync(unittest.TestCase):
                 cluster['GalaxyCluster']['GalaxyElement'] = cluster['GalaxyElement']
             if 'GalaxyClusterRelation' in cluster:
                 cluster['GalaxyCluster']['GalaxyClusterRelation'] = cluster['GalaxyClusterRelation']
-            self.compare_cluster(base_cluster, cluster, mirrorCheck=mirrorCheck, fromPull=fromPull)
+            self.compare_cluster(base_cluster, cluster, mirrorCheck=mirrorCheck, isPull=isPull)
 
 
-    def compare_cluster(self, cluster1, cluster2, mirrorCheck=False, fromPull=False):
+    def compare_cluster(self, cluster1, cluster2, mirrorCheck=False, isPull=False, isPush=False):
         to_check_cluster = ['uuid', 'version', 'value', 'type', 'extends_uuid', 'extends_version']
         to_check_element = ['key', 'value']
 
-        if not cluster1['GalaxyCluster']['published'] and fromPull:
+        if not cluster1['GalaxyCluster']['published'] and (isPull or isPush):
             self.assertIs(cluster2, False, 'Non-published cluster should not be pulled/pushed')
             return
-        if cluster1['GalaxyCluster']['distribution'] == '0' and fromPull:
+        if cluster1['GalaxyCluster']['distribution'] == '0' and (isPull or isPush):
             self.assertIs(cluster2, False, 'your organisation only should not be pulled/pushed')
+            return
+        if cluster1['GalaxyCluster']['distribution'] == '1' and isPush:
+            self.assertIs(cluster2, False, 'this community only should not be pushed')
             return
         self.assertIsNot(cluster2, False, 'The cluster should have been synced')
 
@@ -679,15 +677,18 @@ class TestClusterSync(unittest.TestCase):
             self.assertEqual(len(cluster1['GalaxyCluster']['GalaxyClusterRelation']), len(cluster2['GalaxyCluster']['GalaxyClusterRelation']))
         for rel1 in cluster1['GalaxyCluster']['GalaxyClusterRelation']:
             rel2 = self.find_relation_in_cluster(rel1, cluster2['GalaxyCluster']['GalaxyClusterRelation'])
-            if rel1['distribution'] == '0' and fromPull:
-                self.assertIs(rel2, False)
+            if rel1['distribution'] == '0' and (isPull or isPush):
+                self.assertIs(rel2, False, 'your organisation only should not be pulled/pushed')
+                continue
+            elif rel1['distribution'] == '1' and isPush:
+                self.assertIs(rel2, False , 'this community only should not be pushed')
                 continue
             else:
                 self.assertIsNot(rel2, False)
 
-            self.compare_relation(rel1, rel2, mirrorCheck=mirrorCheck, fromPull=fromPull)
+            self.compare_relation(rel1, rel2, mirrorCheck=mirrorCheck, isPull=isPull)
 
-    def compare_relation(self, relation1, relation2, mirrorCheck=False, fromPull=False):
+    def compare_relation(self, relation1, relation2, mirrorCheck=False, isPull=False):
         to_check_relation = ['referenced_galaxy_cluster_uuid', 'referenced_galaxy_cluster_type', 'default']
         if mirrorCheck:
                 to_check_relation.append('distribution')
@@ -701,7 +702,8 @@ class TestClusterSync(unittest.TestCase):
             toCheckTag2 = [ self.extract_useful_fields(t, to_check_tag) for t in relation2['Tag']]
             self.assertEqual(toCheckTag1, toCheckTag2)
 
-    def check_after_sync(self, cluster, synced_cluster):
+    def check_after_sync(self, cluster, synced_cluster, isPush=False):
+        isPull = not isPush
         if not cluster['GalaxyCluster']['published']:
             self.assertIs(synced_cluster, False, 'Non-published cluster should not be pulled/pushed')
             return
@@ -710,10 +712,15 @@ class TestClusterSync(unittest.TestCase):
             self.assertIs(synced_cluster, False, 'your organisation only should not be pulled/pushed')
             return
 
-        self.assertIsNot(synced_cluster, False, 'The cluster should have been synced')
         if cluster['GalaxyCluster']['distribution'] == '1':
-            self.assertEqual(synced_cluster['GalaxyCluster']['distribution'], '0', 'Distribution level should have been downgraded')
-        elif cluster['GalaxyCluster']['distribution'] == '2':
+            if isPush:
+                self.assertIs(synced_cluster, False, 'This community should not be pushed (unless server is a `local` server)')
+                return
+            elif isPull:
+                self.assertEqual(synced_cluster['GalaxyCluster']['distribution'], '0', 'Distribution level should have been downgraded')
+
+        self.assertIsNot(synced_cluster, False, 'The cluster should have been synced')
+        if cluster['GalaxyCluster']['distribution'] == '2':
             self.assertEqual(synced_cluster['GalaxyCluster']['distribution'], '1', 'Distribution level should have been downgraded')
         elif cluster['GalaxyCluster']['distribution'] == '3':
             self.assertEqual(synced_cluster['GalaxyCluster']['distribution'], '3', 'Distribution level should not have been downgraded')
@@ -725,13 +732,16 @@ class TestClusterSync(unittest.TestCase):
             synced_relation = self.find_relation_in_cluster(relation, synced_cluster['GalaxyCluster']['GalaxyClusterRelation'])
             if relation['distribution'] == '0':
                 self.assertIs(synced_relation, False, 'your organisation only should not be pulled')
-            if relation['distribution'] == '1':
-                self.assertEqual(synced_relation['distribution'], '0', 'Distribution level should have been downgraded')
-            if relation['distribution'] == '2':
+            elif relation['distribution'] == '1':
+                if isPush:
+                    self.assertIs(synced_relation, False, 'this community should not be pushed (unless server is a `local` server)')
+                elif isPull:
+                    self.assertEqual(synced_relation['distribution'], '0', 'Distribution level should have been downgraded')
+            elif relation['distribution'] == '2':
                 self.assertEqual(synced_relation['distribution'], '1', 'Distribution level should have been downgraded')
-            if relation['distribution'] == '3':
+            elif relation['distribution'] == '3':
                 self.assertEqual(synced_relation['distribution'], '3', 'Distribution level should not have been downgraded')
-            if relation['distribution'] == '4':
+            elif relation['distribution'] == '4':
                 pass
 
     def extract_useful_fields(self, orig_dict, keys_to_extract):
