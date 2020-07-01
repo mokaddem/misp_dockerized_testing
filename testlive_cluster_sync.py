@@ -180,18 +180,11 @@ class TestClusterSync(unittest.TestCase):
             misp1.site_admin_connector.server_pull(misp1.synchronisations[misp_central.name], lotr_event['Event']['id'])
             time.sleep(WAIT_AFTER_SYNC)
 
-            cluster1 = self.get_cluster(misp_central.org_admin_connector, cluster_uuid_1)
-            cluster2 = self.get_cluster(misp_central.org_admin_connector, cluster_uuid_2)
-            cluster3 = self.get_cluster(misp_central.org_admin_connector, cluster_uuid_3)
-            pulled_cluster1 = self.get_cluster(misp1.org_admin_connector, cluster_uuid_1)
-            pulled_cluster2 = self.get_cluster(misp1.org_admin_connector, cluster_uuid_2)
-            pulled_cluster3 = self.get_cluster(misp1.org_admin_connector, cluster_uuid_3)
-            self.check_after_sync(cluster1, pulled_cluster1)
-            self.check_after_sync(cluster2, pulled_cluster2)
-            self.check_after_sync(cluster3, pulled_cluster3)
-            self.compare_cluster(cluster1, pulled_cluster1, mirrorCheck=False, isPull=True)
-            self.compare_cluster(cluster2, pulled_cluster2, mirrorCheck=False, isPull=True)
-            self.compare_cluster(cluster3, pulled_cluster3, mirrorCheck=False, isPull=True)
+            for cluster_uuid in [cluster_uuid_1, cluster_uuid_2, cluster_uuid_3]:
+                cluster = self.get_cluster(misp_central.org_admin_connector, cluster_uuid)
+                pulled_cluster = self.get_cluster(misp1.org_admin_connector, cluster_uuid)
+                self.check_after_sync(cluster, pulled_cluster)
+                self.compare_cluster(cluster, pulled_cluster, mirrorCheck=False, isPull=True)
         finally:
             # pass
             self.delete_lotr_event(misp1.site_admin_connector)
