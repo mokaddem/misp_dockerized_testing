@@ -291,6 +291,28 @@ class TestClusterSync(unittest.TestCase):
         finally:
             pass
 
+    def test_import_clusters_with_publish(self):
+        '''Test galaxy_cluster import'''
+        try:
+            source = self.misp_instances.instances[0]
+            dest = self.misp_instances.central_node
+            source.site_admin_connector.update_server({'push': True, 'push_galaxy_clusters': True}, source.synchronisations[dest.name].id) # Allow further propagation
+
+            self.import_lotr_galaxies(source.org_admin_connector)
+            time.sleep(WAIT_AFTER_SYNC)
+            imported_clusters = self.get_clusters(source.org_admin_connector)
+            pushed_clusters = self.get_clusters(dest.org_admin_connector)
+            pushed_clusters_by_uuid = { cluster['GalaxyCluster']['uuid']: cluster for cluster in pushed_clusters }
+
+            for cluster in imported_clusters:
+                pushed_cluster = pushed_clusters_by_uuid.get(cluster['GalaxyCluster']['uuid'], False)
+                self.check_after_sync(cluster, pushed_cluster, isPush=True)
+                self.compare_cluster(cluster, pushed_cluster, mirrorCheck=False, isPush=True)
+        finally:
+            source.site_admin_connector.update_server({'push': False, 'push_galaxy_clusters': False}, source.synchronisations[dest.name].id)
+            self.wipe_lotr_galaxies(source.site_admin_connector)
+            self.wipe_lotr_galaxies(dest.site_admin_connector)
+
     @setup_cluster_env
     def test_add_cluster(self):
         '''Test galaxy_cluster add'''
