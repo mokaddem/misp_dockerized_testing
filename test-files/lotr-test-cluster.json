@@ -13,6 +13,7 @@
         "orgc_id": "1",
         "default": false,
         "locked": false,
+        "published": false,
         "extends_uuid": "",
         "extends_version": null,
         "uuid": "92730146-7e4d-4e0a-941e-ecb25c1d0fe1",

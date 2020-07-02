@@ -357,29 +357,34 @@ class TestClusterSync(unittest.TestCase):
             dest = self.misp_instances.instances[2]
 
             lotr_test_cluster = self.get_test_cluster_from_disk()
-            added_cluster = self.add_lotr_cluster(source.org_admin_connector)
-            self.assertEqual(added_cluster['GalaxyCluster']['uuid'], lotr_test_cluster['GalaxyCluster']['uuid'])
+            uuid = lotr_test_cluster['GalaxyCluster']['uuid']
+            self.import_galaxy_cluster(source.org_admin_connector, [lotr_test_cluster])
+            added_cluster = self.get_cluster(source.org_admin_connector, uuid)
+            self.assertEqual(added_cluster['GalaxyCluster']['uuid'], uuid)
             self.assertFalse(added_cluster['GalaxyCluster']['published'])
+            source.site_admin_connector.update_server({'push': True}, source.synchronisations[middle.name].id) # Allow further propagation
+            middle.site_admin_connector.update_server({'push': True}, source.synchronisations[dest.name].id)
 
-            uuid = added_cluster['GalaxyCluster']['uuid']
             relative_path = f'/galaxy_clusters/publish/{uuid}'
             source.org_admin_connector.direct_call(relative_path, data={})
-            published_cluster = self.get_cluster(source.org_admin_connector, lotr_test_cluster['GalaxyCluster']['uuid'])
+            published_cluster = self.get_cluster(source.org_admin_connector, uuid)
             self.assertTrue(published_cluster['GalaxyCluster']['published'])
 
             # Make sure the cluster is synced
+            time.sleep(WAIT_AFTER_SYNC)
             pushed_cluster_middle = self.get_cluster(middle.org_admin_connector, uuid)
-            time.sleep(WAIT_AFTER_SYNC)
             self.check_after_sync(published_cluster, pushed_cluster_middle, isPush=True)
-            pushed_cluster_dest = self.get_cluster(dest.org_admin_connector, uuid)
             time.sleep(WAIT_AFTER_SYNC)
+            pushed_cluster_dest = self.get_cluster(dest.org_admin_connector, uuid)
             self.check_after_sync(pushed_cluster_middle, pushed_cluster_dest, isPush=True)
 
             relative_path = f'/galaxy_clusters/unpublish/{uuid}'
             source.org_admin_connector.direct_call(relative_path, data={})
-            unpublished_cluster = self.get_cluster(source.org_admin_connector, lotr_test_cluster['GalaxyCluster']['uuid'])
+            unpublished_cluster = self.get_cluster(source.org_admin_connector, uuid)
             self.assertFalse(unpublished_cluster['GalaxyCluster']['published'])
         finally:
+            source.site_admin_connector.update_server({'push': False}, source.synchronisations[middle.name].id)
+            middle.site_admin_connector.update_server({'push': False}, source.synchronisations[dest.name].id)
             self.wipe_lotr_galaxies(source.site_admin_connector)
             self.wipe_lotr_galaxies(middle.site_admin_connector)
             self.wipe_lotr_galaxies(dest.site_admin_connector)
@@ -525,6 +530,10 @@ class TestClusterSync(unittest.TestCase):
         lotr_clusters = self.get_lotr_clusters_from_disk()
         relative_path = 'galaxies/import'
         instance.direct_call(relative_path, data=lotr_clusters)
+
+    def import_galaxy_cluster(self, instance, cluster):
+        relative_path = 'galaxies/import'
+        return instance.direct_call(relative_path, data=cluster)
 
     def wipe_lotr_galaxies(self, instance):
         lotr_uuids = ["93d4d641-a905-458a-83b4-18677a4ea534",
