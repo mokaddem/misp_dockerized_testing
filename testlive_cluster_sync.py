@@ -801,7 +801,6 @@ class TestClusterSync(unittest.TestCase):
         sgs_nodes = { f'node{i+1}': [sg.uuid for sg in instance.site_admin_connector.sharing_groups()] for i, instance in enumerate(self.misp_instances.instances) }
         sgs_nodes['central'] = [ sg.uuid for sg in central.site_admin_connector.sharing_groups() ]
 
-        pprint(sgs_nodes)
         for sg in base_sharinggroups:
             for node_name in sgs_nodes.keys():
                 if node_name in sg.description:
