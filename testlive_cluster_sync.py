@@ -321,14 +321,22 @@ class TestClusterSync(unittest.TestCase):
             self.wipe_lotr_galaxies(source.site_admin_connector)
             self.wipe_lotr_galaxies(dest.site_admin_connector)
 
-
-    @setup_cluster_env
-    def test_sharing_group_pull(self):
-        '''Test galaxy_cluster sharing group pull - Test that sharing group are correctly pulled and captured'''
+    def test_sharing_group_import(self):
+        '''Test galaxy_cluster sharing group import - Import clusters with sharing groups defined in it'''
         try:
             misp_central = self.misp_instances.central_node
+            lotr_sg_clusters = self.get_lotr_sg_clusters_from_disk()
+            self.import_galaxy_cluster(misp_central.site_admin_connector, lotr_sg_clusters)
+            cluster = self.get_clusters(misp_central.site_admin_connector)
+            self.assertEqual(len(cluster), 1)
+            cluster = cluster[0]
+            self.assertEqual(cluster['GalaxyCluster']['distribution'], '4')
+            sharing_group = cluster['GalaxyCluster']['SharingGroup']
+            sharing_group_disk = lotr_sg_clusters[0]['GalaxyCluster']['SharingGroup']
+            self.assertEqual(sharing_group['releasability'], sharing_group_disk['releasability'])
+            self.assertEqual(sharing_group['roaming'], sharing_group_disk['roaming'])
         finally:
-            pass
+            self.wipe_lotr_galaxies(misp_central.site_admin_connector)
 
     def test_sharing_group_publish(self):
         '''Test galaxy_cluster sharing group publish - Test that sharing group are sync while publishing a cluster'''
