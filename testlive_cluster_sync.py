@@ -9,9 +9,15 @@ import logging
 from pprint import pprint
 import json
 import copy
+import uuid
 import functools
 
 from pymisp import MISPEvent, MISPObject, MISPSharingGroup, Distribution
+
+# FIXME: Monkey patch
+def repSG(self, *args, **kwargs):
+    return f'<MISPSharingGroup: {self.name}>'
+MISPSharingGroup.__repr__ = repSG
 
 from .setup_sync import MISPInstances
 
@@ -21,6 +27,7 @@ urllib3.disable_warnings()
 
 WAIT_AFTER_SYNC = 5
 LOTR_GALAXY_PATH = 'test-files/lotr-galaxy-cluster.json'
+LOTR_GALAXY_SG_PATH = 'test-files/lotr-galaxy-cluster-sharinggroup.json'
 LOTR_TEST_CLUSTER_PATH = 'test-files/lotr-test-cluster.json'
 LOTR_TEST_RELATION_PATH = 'test-files/lotr-test-relation.json'
 MITRE_TEST_GALAXY_PATH = 'test-files/test-mitre-mobile-attack-course-of-action.json'
@@ -79,6 +86,7 @@ class TestClusterSync(unittest.TestCase):
         cls.maxDiff = None
         cls.misp_instances = MISPInstances()
         cls.lotr_clusters = []
+        cls.lotr_sg_clusters = []
         cls.lotr_test_cluster = {}
         cls.lotr_test_relation = {}
         cls.mitre_test_galaxy = {}
@@ -292,7 +300,7 @@ class TestClusterSync(unittest.TestCase):
             pass
 
     def test_import_clusters_with_publish(self):
-        '''Test galaxy_cluster import'''
+        '''Test galaxy_cluster import that are already published. Make sure they are sync'''
         try:
             source = self.misp_instances.instances[0]
             dest = self.misp_instances.central_node
@@ -312,6 +320,65 @@ class TestClusterSync(unittest.TestCase):
             source.site_admin_connector.update_server({'push': False, 'push_galaxy_clusters': False}, source.synchronisations[dest.name].id)
             self.wipe_lotr_galaxies(source.site_admin_connector)
             self.wipe_lotr_galaxies(dest.site_admin_connector)
+
+
+    @setup_cluster_env
+    def test_sharing_group_pull(self):
+        '''Test galaxy_cluster sharing group pull - Test that sharing group are correctly pulled and captured'''
+        try:
+            misp_central = self.misp_instances.central_node
+        finally:
+            pass
+
+    def test_sharing_group_publish(self):
+        '''Test galaxy_cluster sharing group publish - Test that sharing group are sync while publishing a cluster'''
+        sharinggroups = []
+        try:
+            node1 = self.misp_instances.instances[0]
+            instances_to_check = {
+                'node2': self.misp_instances.instances[1],
+                'node3': self.misp_instances.instances[2],
+                'central': self.misp_instances.central_node
+            }
+            for _, instance in instances_to_check.items():
+                node1.site_admin_connector.update_server({'push': True}, node1.synchronisations[instance.name].id)
+            sharinggroups = self.setup_sharinggroup_env()
+
+            # Needed to create the container galaxy
+            lotr_test_cluster = self.get_test_cluster_from_disk()
+            self.import_galaxy_cluster(node1.site_admin_connector, [lotr_test_cluster])
+            galaxy_uuid = lotr_test_cluster['GalaxyCluster']['Galaxy']['uuid']
+            clusters = []
+
+            uuids = [str(uuid.uuid4()) for i in range(len(sharinggroups))]
+            for i, sg in enumerate(sharinggroups):
+                sg_cluster = {
+                    'uuid': uuids[i],
+                    'value': 'test-cluster-sg',
+                    'description': 'test cluster',
+                    'distribution': 4,
+                    'sharing_group_id': sg.id,
+                    'published': True
+                }
+                added_cluster = self.add_galaxy_cluster(node1.org_admin_connector, galaxy_uuid, sg_cluster)
+                added_cluster = self.publish_cluster(node1.org_admin_connector, uuids[i], fetch_cluster=True)
+                clusters.append(added_cluster)
+                time.sleep(WAIT_AFTER_SYNC*(i+1)) # sg are ordered by sync depth
+
+            sg_existence_per_node = self.check_sharinggroup_existence_after_sync(sharinggroups)
+            for cluster in clusters:
+                for node_name, instance in instances_to_check.items():
+                    pushed_cluster = self.get_cluster(instance.org_admin_connector, cluster['GalaxyCluster']['uuid'])
+                    if cluster['GalaxyCluster']['SharingGroup']['uuid'] in sg_existence_per_node[node_name]:
+                        self.compare_cluster(cluster, pushed_cluster, mirrorCheck=False, isPush=True)
+        finally:
+            # pass
+            for _, instance in instances_to_check.items():
+                node1.site_admin_connector.update_server({'push': False}, node1.synchronisations[instance.name].id)
+            self.wipe_lotr_galaxies(self.misp_instances.central_node.site_admin_connector)
+            for instance in self.misp_instances.instances:
+                self.wipe_lotr_galaxies(instance.site_admin_connector)
+            self.delete_sharinggroup_env()
 
     @setup_cluster_env
     def test_add_cluster(self):
@@ -387,9 +454,7 @@ class TestClusterSync(unittest.TestCase):
             source.site_admin_connector.update_server({'push': True}, source.synchronisations[middle.name].id) # Allow further propagation
             middle.site_admin_connector.update_server({'push': True}, source.synchronisations[dest.name].id)
 
-            relative_path = f'/galaxy_clusters/publish/{uuid}'
-            source.org_admin_connector.direct_call(relative_path, data={})
-            published_cluster = self.get_cluster(source.org_admin_connector, uuid)
+            published_cluster = self.publish_cluster(source.org_admin_connector, uuid, fetch_cluster=True)
             self.assertTrue(published_cluster['GalaxyCluster']['published'])
 
             # Make sure the cluster is synced
@@ -575,6 +640,20 @@ class TestClusterSync(unittest.TestCase):
         added_cluster = self.get_cluster(instance, uuid)
         return added_cluster
 
+    def add_galaxy_cluster(self, instance, galaxy_id, cluster):
+        relative_path = f'/galaxy_clusters/add/{galaxy_id}'
+        uuid = cluster['uuid']
+        instance.direct_call(relative_path, data=cluster)
+        return self.get_cluster(instance, uuid)
+
+    def publish_cluster(self, instance, uuid, fetch_cluster=False):
+        relative_path = f'/galaxy_clusters/publish/{uuid}'
+        call_result = instance.direct_call(relative_path, data={})
+        if fetch_cluster:
+            return self.get_cluster(instance, uuid)
+        else:
+            return call_result
+
     def delete_lotr_cluster(self, instance):
         lotr_test_cluster = self.get_test_cluster_from_disk()
         uuid = lotr_test_cluster['GalaxyCluster']['uuid']
@@ -638,6 +717,12 @@ class TestClusterSync(unittest.TestCase):
                 self.lotr_clusters = json.load(f)
         return self.lotr_clusters
 
+    def get_lotr_sg_clusters_from_disk(self):
+        if len(self.lotr_sg_clusters) == 0:
+            with open(LOTR_GALAXY_SG_PATH) as f:
+                self.lotr_sg_clusters = json.load(f)
+        return self.lotr_sg_clusters
+
     def get_test_cluster_from_disk(self):
         if len(self.lotr_test_cluster) == 0:
             with open(LOTR_TEST_CLUSTER_PATH) as f:
@@ -661,6 +746,67 @@ class TestClusterSync(unittest.TestCase):
             with open(LOTR_EVENT_PATH) as f:
                 self.lotr_event = json.load(f)
         return self.lotr_event
+
+    def setup_sharinggroup_env(self):
+        instance = self.misp_instances.instances[0]
+        central = self.misp_instances.central_node
+        central_server_id = instance.synchronisations[central.name].id
+        sharing_groups = []
+
+        sg = MISPSharingGroup()
+        sg.name = 'SG - Node 1'
+        sg.releasability = 'Node 1 & Central but sync with Node1 server only'
+        sg.description = ','.join(['node1'])
+        sg.roaming = False
+        sharing_group = instance.site_admin_connector.add_sharing_group(sg)
+        instance.site_admin_connector.add_org_to_sharing_group(sharing_group, central.host_org.uuid)
+        instance.site_admin_connector.add_server_to_sharing_group(sharing_group, 0)  # Add local server
+        sharing_groups.append(sharing_group)
+
+        sg = MISPSharingGroup()
+        sg.name = 'SG - Node1 & Central'
+        sg.releasability = 'Node1 and Central nodes'
+        sg.description = ','.join(['node1', 'central'])
+        sg.roaming = False
+        sharing_group = instance.site_admin_connector.add_sharing_group(sg)
+        instance.site_admin_connector.add_server_to_sharing_group(sharing_group, 0)
+        instance.site_admin_connector.add_org_to_sharing_group(sharing_group, central.host_org.uuid)
+        instance.site_admin_connector.add_server_to_sharing_group(sharing_group, central_server_id)
+        sharing_groups.append(sharing_group)
+
+        sg = MISPSharingGroup()
+        sg.name = 'SG - All'
+        sg.releasability = 'All nodes'
+        sg.description = ','.join(['node1', 'node2', 'node3', 'central'])
+        sg.roaming = True
+        sharing_group = instance.site_admin_connector.add_sharing_group(sg)
+        instance.site_admin_connector.add_org_to_sharing_group(sharing_group, central.host_org.uuid)
+        for nodes in self.misp_instances.instances[1:]:
+            instance.site_admin_connector.add_org_to_sharing_group(sharing_group, nodes.host_org.uuid)
+        sharing_groups.append(sharing_group)
+
+        return sharing_groups
+
+    def delete_sharinggroup_env(self):
+        sgs = self.misp_instances.central_node.site_admin_connector.sharing_groups()
+        for sg in sgs:
+            self.misp_instances.central_node.site_admin_connector.delete_sharing_group(sg.id)
+        for instance in self.misp_instances.instances:
+            sgs = instance.site_admin_connector.sharing_groups()
+            for sg in sgs:
+                instance.site_admin_connector.delete_sharing_group(sg.id)
+
+    def check_sharinggroup_existence_after_sync(self, base_sharinggroups):
+        central = self.misp_instances.central_node
+        sgs_nodes = { f'node{i+1}': [sg.uuid for sg in instance.site_admin_connector.sharing_groups()] for i, instance in enumerate(self.misp_instances.instances) }
+        sgs_nodes['central'] = [ sg.uuid for sg in central.site_admin_connector.sharing_groups() ]
+
+        pprint(sgs_nodes)
+        for sg in base_sharinggroups:
+            for node_name in sgs_nodes.keys():
+                if node_name in sg.description:
+                    self.assertIn(sg.uuid, sgs_nodes[node_name], f'The sharinggroup `{sg.name}` should be on server `{node_name}`')
+        return sgs_nodes
 
     def compare_cluster_with_disk(self, clusters, mirrorCheck=False, isPull=False):
         base_clusters = self.get_lotr_clusters_from_disk()
@@ -798,18 +944,15 @@ class TestClusterSync(unittest.TestCase):
         clusters = set()
         for galaxy in event['Event'].get('Galaxy', []):
             for cluster in galaxy['GalaxyCluster']:
-                # clusters[cluster['uuid']] = cluster
                 clusters.add(cluster['uuid'])
         for attribute in event['Event'].get('Attribute', []):
             for galaxy in attribute.get('Galaxy', []):
                 for cluster in galaxy['GalaxyCluster']:
-                    # clusters[cluster['uuid']] = cluster
                     clusters.add(cluster['uuid'])
         for mispobject in event['Event'].get('Object', []):
             for attribute in mispobject['Attribute']:
                 for galaxy in attribute.get('Galaxy', []):
                     for cluster in galaxy['GalaxyCluster']:
-                        # clusters[cluster['uuid']] = cluster
                         clusters.add(cluster['uuid'])
         return clusters
 
