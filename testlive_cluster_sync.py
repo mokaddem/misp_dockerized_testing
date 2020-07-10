@@ -697,12 +697,11 @@ class TestClusterSync(ClusterUtility):
 
             # Add the cluster this way to have it not locked
             added_cluster = self.add_galaxy_cluster(source.org_admin_connector, lotr_test_cluster['GalaxyCluster']['Galaxy']['uuid'], lotr_test_cluster)
-            # added_cluster = self.get_cluster(source.org_admin_connector, uuid)
             self.assertEqual(added_cluster['GalaxyCluster']['uuid'], uuid)
             self.assertFalse(added_cluster['GalaxyCluster']['published'])
             self.assertFalse(added_cluster['GalaxyCluster']['locked'])
             source.site_admin_connector.update_server({'push': True}, source.synchronisations[middle.name].id) # Allow further propagation
-            middle.site_admin_connector.update_server({'push': True}, source.synchronisations[dest.name].id)
+            middle.site_admin_connector.update_server({'push': True}, middle.synchronisations[dest.name].id)
 
             published_cluster = self.publish_cluster(source.org_admin_connector, uuid, fetch_cluster=True)
             self.assertTrue(published_cluster['GalaxyCluster']['published'])
@@ -722,15 +721,39 @@ class TestClusterSync(ClusterUtility):
             unpublished_cluster = self.get_cluster(source.org_admin_connector, uuid)
             self.assertFalse(unpublished_cluster['GalaxyCluster']['published'])
 
-            # modifiedText = 'Should not be sync to source server'
-            # pushed_cluster_middle['GalaxyCluster']['description'] = modifiedText
-            # relative_path = f'/galaxy_clusters/edit/{uuid}'
-            # middle.org_admin_connector.direct_call(relative_path, data=added_cluster)
-            # modified_cluster_middle = self.get_cluster(middle.org_admin_connector, uuid)
-            # self.assertEqual(modified_cluster_middle['GalaxyCluster']['description'], modifiedText)
+            # Test that cluster's lock state is respected
+            modifiedText = 'Should not be sync to source server'
+            pushed_cluster_middle['GalaxyCluster']['description'] = modifiedText
+            relative_path = f'/galaxy_clusters/edit/{uuid}'
+            middle.org_admin_connector.direct_call(relative_path, data=pushed_cluster_middle)
+            modified_cluster_middle = self.get_cluster(middle.org_admin_connector, uuid)
+            self.assertNotEqual(modified_cluster_middle['GalaxyCluster']['description'], modifiedText, 'Only the creator organisation can edit the cluster')
+
+            middle.site_admin_connector.direct_call(relative_path, data=pushed_cluster_middle)
+            modified_cluster_middle = self.get_cluster(middle.org_admin_connector, uuid)
+            self.assertEqual(modified_cluster_middle['GalaxyCluster']['description'], modifiedText, 'The site admin should have been able to modify the cluster')
+            self.assertFalse(modified_cluster_middle['GalaxyCluster']['published'], 'Cluster should be unpublished')
+            middle.site_admin_connector.update_server({'push': True}, middle.synchronisations[source.name].id)
+
+            self.publish_cluster(middle.org_admin_connector, uuid)
+            time.sleep(WAIT_AFTER_SYNC)
+            published_cluster = self.get_cluster(middle.org_admin_connector, uuid)
+            self.assertFalse(published_cluster['GalaxyCluster']['published'], 'Only the creator organisation can publish the cluster')
+
+            self.publish_cluster(middle.site_admin_connector, uuid)
+            time.sleep(WAIT_AFTER_SYNC)
+            published_cluster = self.get_cluster(middle.site_admin_connector, uuid)
+            self.assertTrue(published_cluster['GalaxyCluster']['published'], 'The site admin should have been able to publish the cluster')
+
+            pushed_cluster_source = self.get_cluster(source.org_admin_connector, uuid)
+            pushed_cluster_dest = self.get_cluster(dest.org_admin_connector, uuid)
+            self.assertEqual(pushed_cluster_dest['GalaxyCluster']['description'], modifiedText, 'The description should have been updated on the destination server as it is locked')
+            self.assertNotEqual(pushed_cluster_source['GalaxyCluster']['description'], modifiedText, 'The description should not have been updated on the destination server as it is not locked')
         finally:
             source.site_admin_connector.update_server({'push': False}, source.synchronisations[middle.name].id)
-            middle.site_admin_connector.update_server({'push': False}, source.synchronisations[dest.name].id)
+            middle.site_admin_connector.update_server({'push': False}, middle.synchronisations[dest.name].id)
+            middle.site_admin_connector.update_server({'push': False}, middle.synchronisations[source.name].id)
+
             self.wipe_lotr_galaxies(source.site_admin_connector)
             self.wipe_lotr_galaxies(middle.site_admin_connector)
             self.wipe_lotr_galaxies(dest.site_admin_connector)
