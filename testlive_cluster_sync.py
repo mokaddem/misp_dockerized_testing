@@ -536,6 +536,8 @@ class TestClusterCRUD(ClusterUtility):
 
             deleted_cluster = self.delete_lotr_cluster(misp_central.org_admin_connector)
             self.assertIs(deleted_cluster, False)
+
+            # Make sure the cluster UUID has been added to the blocklist and can't be added back
         finally:
             pass
 
@@ -1011,7 +1013,7 @@ class TestClusterSync(ClusterUtility):
             self.delete_lotr_event(dest.site_admin_connector)
             self.wipe_lotr_galaxies(dest.site_admin_connector)
 
-    def test_sharing_group_publish_cluster_relation(self):
+    def test_10_sharing_group_publish_cluster_relation(self):
         '''Test galaxy cluster relation sharing group sync'''
         sharinggroups = []
         try:
@@ -1030,6 +1032,33 @@ class TestClusterSync(ClusterUtility):
             self.check_sharinggroup_existence_after_sync([node1CentralSG])
 
         finally:
+            node1.site_admin_connector.update_server({'push': False}, node1.synchronisations[central.name].id)
             self.delete_sharinggroup_env()
             self.wipe_lotr_galaxies(node1.site_admin_connector)
             self.wipe_lotr_galaxies(central.site_admin_connector)
+
+    def test_11_cluster_sync_loop(self):
+        '''Test that a cluster can\'t be synchronized if its UUID is recorded in the blocklist'''
+        try:
+            source = self.misp_instances.instances[0]
+            dest = self.misp_instances.instances[1]
+            self.import_lotr_galaxies(source.org_admin_connector)
+            dest.site_admin_connector.server_pull(dest.synchronisations[source.name])
+            time.sleep(10*WAIT_AFTER_SYNC)
+            cluster_uuid_to_delete = '5eda10b4-6e0c-476a-8be5-345d0a00020f'
+            pulled_cluster = self.get_cluster(dest.org_admin_connector, cluster_uuid_to_delete)
+            self.assertEqual(pulled_cluster['GalaxyCluster']['uuid'], cluster_uuid_to_delete, 'Cluster should have been pulled')
+
+            relative_path = f'/galaxy_clusters/delete/{cluster_uuid_to_delete}'
+            tmp = source.site_admin_connector.direct_call(relative_path, data={})
+            deleted_cluster = self.get_cluster(source.org_admin_connector, cluster_uuid_to_delete)
+            self.assertIs(deleted_cluster, False, 'Cluster should have been deleted')
+
+            source.site_admin_connector.server_pull(source.synchronisations[dest.name])
+            time.sleep(10*WAIT_AFTER_SYNC)
+            pulled_cluster = self.get_cluster(dest.org_admin_connector, cluster_uuid_to_delete)
+            self.assertFalse(pulled_cluster, 'Cluster should not have been synchronized because it should be blocklisted')
+        finally:
+            pass
+            self.wipe_lotr_galaxies(source.site_admin_connector)
+            self.wipe_lotr_galaxies(dest.site_admin_connector)
