@@ -1011,6 +1011,25 @@ class TestClusterSync(ClusterUtility):
             self.delete_lotr_event(dest.site_admin_connector)
             self.wipe_lotr_galaxies(dest.site_admin_connector)
 
-    # def test_sharing_group_publish_cluster_relation(self):
-    #     '''Test galaxy cluster relation sharing group sync'''
-    #     self.assertEqual(1, 0)
+    def test_sharing_group_publish_cluster_relation(self):
+        '''Test galaxy cluster relation sharing group sync'''
+        sharinggroups = []
+        try:
+            node1 = self.misp_instances.instances[0]
+            central = self.misp_instances.central_node
+            node1.site_admin_connector.update_server({'push': True}, node1.synchronisations[central.name].id)
+            sharinggroups = self.setup_sharinggroup_env()
+            node1CentralSG = [sg for sg in sharinggroups if sg['description'] == ','.join(['node1', 'central'])][0]
+
+            lotr_test_cluster = self.get_test_cluster_from_disk()
+            lotr_test_cluster['GalaxyCluster']['published'] = True
+            lotr_test_cluster['GalaxyCluster']['GalaxyClusterRelation'][0]['distribution'] = 4
+            lotr_test_cluster['GalaxyCluster']['GalaxyClusterRelation'][0]['sharing_group_id'] = node1CentralSG['id']
+            self.import_galaxy_cluster(node1.site_admin_connector, [lotr_test_cluster])
+            time.sleep(WAIT_AFTER_SYNC)
+            self.check_sharinggroup_existence_after_sync([node1CentralSG])
+
+        finally:
+            self.delete_sharinggroup_env()
+            self.wipe_lotr_galaxies(node1.site_admin_connector)
+            self.wipe_lotr_galaxies(central.site_admin_connector)

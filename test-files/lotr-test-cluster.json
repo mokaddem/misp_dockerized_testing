@@ -45,7 +45,7 @@
             {
                 "id": "1109",
                 "referenced_galaxy_cluster_uuid": "5eda0335-2fb0-4a94-ba25-1a51f331dc3b",
-                "referenced_galaxy_cluster_type": "relation",
+                "referenced_galaxy_cluster_type": "relation-type",
                 "referenced_galaxy_cluster_value": "",
                 "distribution": "3",
                 "sharing_group_id": null,
