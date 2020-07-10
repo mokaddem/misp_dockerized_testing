@@ -14,7 +14,7 @@
         "default": false,
         "locked": false,
         "published": false,
-        "extends_uuid": "",
+        "extends_uuid": null,
         "extends_version": null,
         "uuid": "92730146-7e4d-4e0a-941e-ecb25c1d0fe1",
         "Galaxy": {
@@ -44,7 +44,7 @@
         "GalaxyClusterRelation": [
             {
                 "id": "1109",
-                "referenced_galaxy_cluster_uuid": "ec0048f2-a7b2-4a71-83de-6e8fe4fef252",
+                "referenced_galaxy_cluster_uuid": "5eda0335-2fb0-4a94-ba25-1a51f331dc3b",
                 "referenced_galaxy_cluster_type": "relation",
                 "referenced_galaxy_cluster_value": "",
                 "distribution": "3",

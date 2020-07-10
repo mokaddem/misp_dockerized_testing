@@ -1,0 +1,93 @@
+[
+    {
+        "GalaxyCluster": {
+            "uuid": "5efd8fab-d810-4e7b-a0b7-7f8b0a00020f",
+            "collection_uuid": "",
+            "type": "middle-earth-locations",
+            "value": "Helm's Deep",
+            "tag_name": "misp-galaxy:middle-earth-locations=\"5efd8fab-d810-4e7b-a0b7-7f8b0a00020f\"",
+            "description": "Helm's Deep, named for Helm Hammerhand, was a fortified gorge in the White Mountains located below the Thrihyrne. It lay near the Westfold and was commonly known as the location of the Hornburg. It was later made famous by the Battle of the Hornburg, a major battle of the War of the Ring. ",
+            "source": "",
+            "authors": null,
+            "version": "1593675691",
+            "distribution": "4",
+            "sharing_group_id": "2",
+            "org_id": "1",
+            "orgc_id": "1",
+            "default": false,
+            "locked": false,
+            "extends_uuid": "",
+            "extends_version": null,
+            "published": false,
+            "Galaxy": {
+                "id": "5",
+                "uuid": "b8563f2f-dd0e-4c11-bdca-c2fe7774e779",
+                "name": "Middle-earth locations",
+                "type": "middle-earth-locations",
+                "description": "The Middle-earth locations from The Lord of the Rings",
+                "version": "1",
+                "icon": "map",
+                "namespace": "LoTR"
+            },
+            "SharingGroup": {
+                "id": "2",
+                "name": "SG2 - Only this instance",
+                "releasability": "Only this instance",
+                "description": "",
+                "uuid": "5efd86ec-6a2c-4ac2-918f-01700a00020f",
+                "organisation_uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "org_id": "1",
+                "sync_user_id": "0",
+                "active": true,
+                "created": "2020-07-02 09:04:12",
+                "modified": "2020-07-02 09:49:23",
+                "local": true,
+                "roaming": false
+            },
+            "GalaxyElement": [],
+            "GalaxyClusterRelation": [
+                {
+                    "referenced_galaxy_cluster_uuid": "5eda0f04-7a70-4132-a0cc-45050a00020f",
+                    "referenced_galaxy_cluster_type": "belongs to",
+                    "distribution": "3",
+                    "sharing_group_id": null,
+                    "default": false,
+                    "galaxy_cluster_uuid": "5efd8fab-d810-4e7b-a0b7-7f8b0a00020f"
+                }
+            ],
+            "Org": {
+                "id": "1",
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "Orgc": {
+                "id": "1",
+                "name": "original.org",
+                "date_created": "2020-05-18 15:33:53",
+                "date_modified": "2020-06-05 11:18:00",
+                "description": "Automatically generated admin organisation",
+                "type": "ADMIN",
+                "nationality": "Not specified",
+                "sector": "",
+                "created_by": "0",
+                "uuid": "5ec28ec1-8d7c-4859-9068-5041f331dc3b",
+                "contacts": "",
+                "local": true,
+                "restricted_to_domain": "",
+                "landingpage": null
+            },
+            "TargetingClusterRelation": []
+        }
+    }
+]
