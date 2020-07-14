@@ -151,6 +151,7 @@ class ClusterUtility(unittest.TestCase):
         relative_path = f'/galaxy_clusters/publish/{uuid}'
         call_result = instance.direct_call(relative_path, data={})
         if fetch_cluster:
+            time.sleep(WAIT_AFTER_SYNC) # let time for the worker to pick up the job
             return self.get_cluster(instance, uuid)
         else:
             return call_result
@@ -792,11 +793,7 @@ class TestClusterSync(ClusterUtility):
             source.site_admin_connector.update_server({'push': False}, source.synchronisations[middle.name].id)
             middle.site_admin_connector.update_server({'push': False}, middle.synchronisations[dest.name].id)
             middle.site_admin_connector.update_server({'push': False}, middle.synchronisations[source.name].id)
-
             self.wipe_all()
-            # self.wipe_lotr_galaxies(source.site_admin_connector)
-            # self.wipe_lotr_galaxies(middle.site_admin_connector)
-            # self.wipe_lotr_galaxies(dest.site_admin_connector)
 
     def test_02_sharing_group_publish(self):
         '''Test galaxy_cluster sharing group publish - Test that sharing group are sync while publishing a cluster'''
