@@ -43,7 +43,6 @@ def setup_cluster_env(func):
             func(self,*args,**kwargs)
         finally:
             self.wipe_lotr_galaxies(misp_central.site_admin_connector)
-            # pass
     return wrapper
 
 def setup_relation_env(func):
@@ -62,6 +61,7 @@ def setup_relation_env(func):
             self.assertNotIn('errors', tmp)
             func(self,*args,**kwargs)
         finally:
+            self.delete_sharinggroups(misp_central.site_admin_connector)
             self.delete_lotr_cluster(misp_central.site_admin_connector)
     return wrapper
 
@@ -125,6 +125,11 @@ class ClusterUtility(unittest.TestCase):
         for galaxy_id in lotr_uuids:
             relative_path = f'galaxies/delete/{galaxy_id}'
             instance.direct_call(relative_path, {})
+        relative_path = 'galaxy_cluster_blocklists/massDelete'
+        data = {
+            'ids': str([x for x in range(1000)])
+        }
+        instance.direct_call(relative_path, data=data)
 
     def add_lotr_cluster(self, instance):
         lotr_test_cluster = self.get_test_cluster_from_disk()
@@ -150,12 +155,18 @@ class ClusterUtility(unittest.TestCase):
         else:
             return call_result
 
-    def delete_lotr_cluster(self, instance):
-        lotr_test_cluster = self.get_test_cluster_from_disk()
-        uuid = lotr_test_cluster['GalaxyCluster']['uuid']
-        relative_path = f'/galaxy_clusters/delete/{uuid}'
+    def delete_cluster_from_blocklist(self, instance, uuid):
+        relative_path = f'/galaxy_cluster_blocklists/delete/{uuid}'
         instance.direct_call(relative_path, data={})
-        deleted_cluster = self.get_cluster(instance, lotr_test_cluster['GalaxyCluster']['uuid'])
+
+    def delete_lotr_cluster(self, instance, uuid=None):
+        if uuid is None:
+            lotr_test_cluster = self.get_test_cluster_from_disk()
+            uuid = lotr_test_cluster['GalaxyCluster']['uuid']
+        relative_path = f'/galaxy_clusters/delete/{uuid}/1'
+        instance.direct_call(relative_path, data={})
+        deleted_cluster = self.get_cluster(instance, uuid)
+        self.delete_cluster_from_blocklist(instance, uuid)
         return deleted_cluster
 
     def import_lotr_event(self, instance):
@@ -171,7 +182,8 @@ class ClusterUtility(unittest.TestCase):
 
     def delete_mitre_clusters(self, instance):
         mitre_uuids = "0282356a-1708-11e8-8f53-975633d5c03c"
-        relative_path = f'galaxies/delete/{mitre_uuids}'
+        relative_path = f'galaxies/delete/{mitre_uuids}/1'
+        self.delete_cluster_from_blocklist(instance, mitre_uuids)
         instance.direct_call(relative_path, {})
 
     def delete_lotr_event(self, instance):
@@ -291,6 +303,11 @@ class ClusterUtility(unittest.TestCase):
             sgs = instance.site_admin_connector.sharing_groups()
             for sg in sgs:
                 instance.site_admin_connector.delete_sharing_group(sg.id)
+    
+    def delete_sharinggroups(self, instance):
+        sgs = instance.sharing_groups()
+        for sg in sgs:
+            instance.delete_sharing_group(sg.id)
 
     def check_sharinggroup_existence_after_sync(self, base_sharinggroups):
         central = self.misp_instances.central_node
@@ -451,6 +468,13 @@ class ClusterUtility(unittest.TestCase):
                         clusters.add(cluster['uuid'])
         return clusters
 
+    def wipe_all(self):
+        self.delete_sharinggroup_env()
+        self.wipe_lotr_galaxies(self.misp_instances.instances[0].site_admin_connector)
+        self.wipe_lotr_galaxies(self.misp_instances.instances[1].site_admin_connector)
+        self.wipe_lotr_galaxies(self.misp_instances.instances[2].site_admin_connector)
+        self.wipe_lotr_galaxies(self.misp_instances.central_node.site_admin_connector)
+
 
 class TestClusterCRUD(ClusterUtility):
 
@@ -491,7 +515,7 @@ class TestClusterCRUD(ClusterUtility):
             self.assertEqual(added_cluster['GalaxyCluster']['uuid'], lotr_test_cluster['GalaxyCluster']['uuid'])
             self.compare_cluster(lotr_test_cluster, added_cluster, mirrorCheck=True)
         finally:
-            pass
+            self.delete_sharinggroups(misp_central.site_admin_connector)
 
     @setup_cluster_env
     def test_04_edit_cluster(self):
@@ -523,23 +547,36 @@ class TestClusterCRUD(ClusterUtility):
             self.assertEqual(len(editedCluster['GalaxyCluster']['GalaxyElement']), 1)
             self.assertEqual(editedCluster['GalaxyCluster']['GalaxyElement'][0]['value'], 'weaponModified')
         finally:
-            pass
+            self.delete_sharinggroups(misp_central.site_admin_connector)
 
     @setup_cluster_env
     def test_05_delete_cluster(self):
-        '''Test galaxy_cluster delete'''
+        '''Test galaxy_cluster delete - Test soft and hard deletion as well as cluster blocklist'''
         try:
             misp_central = self.misp_instances.central_node
             lotr_test_cluster = self.get_test_cluster_from_disk()
             added_cluster = self.add_lotr_cluster(misp_central.org_admin_connector)
             self.assertEqual(added_cluster['GalaxyCluster']['uuid'], lotr_test_cluster['GalaxyCluster']['uuid'])
 
-            deleted_cluster = self.delete_lotr_cluster(misp_central.org_admin_connector)
+            relative_path = f'/galaxy_clusters/delete/{lotr_test_cluster["GalaxyCluster"]["uuid"]}/0'
+            misp_central.org_admin_connector.direct_call(relative_path, data={})
+            deleted_cluster = self.get_cluster(misp_central.org_admin_connector, lotr_test_cluster['GalaxyCluster']['uuid'])
+            self.assertTrue(deleted_cluster['GalaxyCluster']['deleted'])
+            self.assertIsNot(deleted_cluster, False)
+
+            relative_path = f'/galaxy_clusters/delete/{lotr_test_cluster["GalaxyCluster"]["uuid"]}/1'
+            misp_central.org_admin_connector.direct_call(relative_path, data={})
+            deleted_cluster = self.get_cluster(misp_central.org_admin_connector, lotr_test_cluster['GalaxyCluster']['uuid'])
             self.assertIs(deleted_cluster, False)
 
-            # Make sure the cluster UUID has been added to the blocklist and can't be added back
+            # Make sure the cluster UUID has been added to the blocklist
+            relative_path = f'/galaxy_cluster_blocklists/index'
+            blocklist = misp_central.site_admin_connector.direct_call(relative_path, data={})
+            uuids_in_blocklist = [entry['cluster_uuid'] for entry in blocklist]
+            self.assertIn(lotr_test_cluster['GalaxyCluster']['uuid'], uuids_in_blocklist)
         finally:
-            pass
+            self.delete_sharinggroups(misp_central.site_admin_connector)
+            self.delete_cluster_from_blocklist(misp_central.site_admin_connector, lotr_test_cluster['GalaxyCluster']['uuid'])
 
     @setup_cluster_env
     def test_06_restsearch_cluster(self):
@@ -562,7 +599,7 @@ class TestClusterCRUD(ClusterUtility):
             clusters_from_restsearch = clusters_from_restsearch[0]
             self.compare_cluster(added_cluster, clusters_from_restsearch, mirrorCheck=True)
         finally:
-             pass
+            self.delete_sharinggroups(misp_central.site_admin_connector)
 
     @setup_relation_env
     def test_07_add_relation(self):
@@ -686,6 +723,7 @@ class TestClusterSync(ClusterUtility):
     def test_01_publish_cluster(self):
         '''Test galaxy_cluster publish/unpublish - Check that the published clusters is passed to connected MISP instances, verify the lock state and check that the original cluster has not been overridden'''
         try:
+            self.wipe_all()
             source = self.misp_instances.instances[0]
             middle = self.misp_instances.instances[1]
             dest = self.misp_instances.instances[2]
@@ -694,8 +732,7 @@ class TestClusterSync(ClusterUtility):
             uuid = lotr_test_cluster['GalaxyCluster']['uuid']
             # Create the galaxy environment
             self.import_galaxy_cluster(source.org_admin_connector, [lotr_test_cluster])
-            relative_path = f'/galaxy_clusters/delete/{uuid}'
-            source.org_admin_connector.direct_call(relative_path, data={})
+            self.delete_lotr_cluster(source.site_admin_connector, uuid=uuid)
 
             # Add the cluster this way to have it not locked
             added_cluster = self.add_galaxy_cluster(source.org_admin_connector, lotr_test_cluster['GalaxyCluster']['Galaxy']['uuid'], lotr_test_cluster)
@@ -756,9 +793,10 @@ class TestClusterSync(ClusterUtility):
             middle.site_admin_connector.update_server({'push': False}, middle.synchronisations[dest.name].id)
             middle.site_admin_connector.update_server({'push': False}, middle.synchronisations[source.name].id)
 
-            self.wipe_lotr_galaxies(source.site_admin_connector)
-            self.wipe_lotr_galaxies(middle.site_admin_connector)
-            self.wipe_lotr_galaxies(dest.site_admin_connector)
+            self.wipe_all()
+            # self.wipe_lotr_galaxies(source.site_admin_connector)
+            # self.wipe_lotr_galaxies(middle.site_admin_connector)
+            # self.wipe_lotr_galaxies(dest.site_admin_connector)
 
     def test_02_sharing_group_publish(self):
         '''Test galaxy_cluster sharing group publish - Test that sharing group are sync while publishing a cluster'''
@@ -802,7 +840,6 @@ class TestClusterSync(ClusterUtility):
                     if cluster['GalaxyCluster']['SharingGroup']['uuid'] in sg_existence_per_node[node_name]:
                         self.compare_cluster(cluster, pushed_cluster, mirrorCheck=False, isPush=True)
         finally:
-            # pass
             for _, instance in instances_to_check.items():
                 node1.site_admin_connector.update_server({'push': False}, node1.synchronisations[instance.name].id)
             self.wipe_lotr_galaxies(self.misp_instances.central_node.site_admin_connector)
@@ -839,7 +876,7 @@ class TestClusterSync(ClusterUtility):
             misp_central = self.misp_instances.central_node
             misp1 = self.misp_instances.instances[0]
             misp1.site_admin_connector.server_pull(misp1.synchronisations[misp_central.name])
-            time.sleep(10*WAIT_AFTER_SYNC)
+            time.sleep(3*WAIT_AFTER_SYNC)
             pulled_clusters = self.get_clusters(misp1.org_admin_connector)
             self.compare_cluster_with_disk(pulled_clusters, mirrorCheck=False, isPull=True)
             pulledClustersByUUID = { cluster['GalaxyCluster']['uuid']: cluster for cluster in pulled_clusters }
@@ -955,9 +992,9 @@ class TestClusterSync(ClusterUtility):
             self.wipe_lotr_galaxies(misp1.site_admin_connector)
 
     def test_08_push_clusters(self):
-        source = self.misp_instances.instances[0]
-        dest = self.misp_instances.instances[1]
         try:
+            source = self.misp_instances.instances[0]
+            dest = self.misp_instances.instances[1]
             '''Test galaxy_cluster push all - Push all accessible-published-custom clusters before the events'''
             self.import_lotr_galaxies(source.org_admin_connector)
             dest.site_admin_connector.update_server({'push_galaxy_clusters': False}, source.synchronisations[dest.name].id) # Avoid further propagation
@@ -980,9 +1017,9 @@ class TestClusterSync(ClusterUtility):
 
     def test_09_push_simple_clusters(self):
         '''Test galaxy_cluster push - Push accessible-published-custom clusters attached to the event being pushed'''
-        source = self.misp_instances.instances[0]
-        dest = self.misp_instances.instances[1]
         try:
+            source = self.misp_instances.instances[0]
+            dest = self.misp_instances.instances[1]
             self.import_lotr_galaxies(source.org_admin_connector)
             self.import_lotr_event(source.org_admin_connector)
             lotr_event_disk = self.get_lotr_event_from_disk()
@@ -1019,7 +1056,7 @@ class TestClusterSync(ClusterUtility):
         try:
             node1 = self.misp_instances.instances[0]
             central = self.misp_instances.central_node
-            node1.site_admin_connector.update_server({'push': True}, node1.synchronisations[central.name].id)
+            node1.site_admin_connector.update_server({'push': True, 'push_galaxy_clusters': True}, node1.synchronisations[central.name].id)
             sharinggroups = self.setup_sharinggroup_env()
             node1CentralSG = [sg for sg in sharinggroups if sg['description'] == ','.join(['node1', 'central'])][0]
 
@@ -1028,7 +1065,7 @@ class TestClusterSync(ClusterUtility):
             lotr_test_cluster['GalaxyCluster']['GalaxyClusterRelation'][0]['distribution'] = 4
             lotr_test_cluster['GalaxyCluster']['GalaxyClusterRelation'][0]['sharing_group_id'] = node1CentralSG['id']
             self.import_galaxy_cluster(node1.site_admin_connector, [lotr_test_cluster])
-            time.sleep(WAIT_AFTER_SYNC)
+            time.sleep(3*WAIT_AFTER_SYNC)
             self.check_sharinggroup_existence_after_sync([node1CentralSG])
 
         finally:
@@ -1044,21 +1081,20 @@ class TestClusterSync(ClusterUtility):
             dest = self.misp_instances.instances[1]
             self.import_lotr_galaxies(source.org_admin_connector)
             dest.site_admin_connector.server_pull(dest.synchronisations[source.name])
-            time.sleep(10*WAIT_AFTER_SYNC)
+            time.sleep(3*WAIT_AFTER_SYNC)
             cluster_uuid_to_delete = '5eda10b4-6e0c-476a-8be5-345d0a00020f'
             pulled_cluster = self.get_cluster(dest.org_admin_connector, cluster_uuid_to_delete)
             self.assertEqual(pulled_cluster['GalaxyCluster']['uuid'], cluster_uuid_to_delete, 'Cluster should have been pulled')
 
-            relative_path = f'/galaxy_clusters/delete/{cluster_uuid_to_delete}'
-            tmp = source.site_admin_connector.direct_call(relative_path, data={})
+            relative_path = f'/galaxy_clusters/delete/{cluster_uuid_to_delete}/1'
+            source.site_admin_connector.direct_call(relative_path, data={})
             deleted_cluster = self.get_cluster(source.org_admin_connector, cluster_uuid_to_delete)
             self.assertIs(deleted_cluster, False, 'Cluster should have been deleted')
 
             source.site_admin_connector.server_pull(source.synchronisations[dest.name])
-            time.sleep(10*WAIT_AFTER_SYNC)
-            pulled_cluster = self.get_cluster(dest.org_admin_connector, cluster_uuid_to_delete)
+            time.sleep(3*WAIT_AFTER_SYNC)
+            pulled_cluster = self.get_cluster(source.org_admin_connector, cluster_uuid_to_delete)
             self.assertFalse(pulled_cluster, 'Cluster should not have been synchronized because it should be blocklisted')
         finally:
-            pass
             self.wipe_lotr_galaxies(source.site_admin_connector)
             self.wipe_lotr_galaxies(dest.site_admin_connector)
