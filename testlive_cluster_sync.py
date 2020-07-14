@@ -25,7 +25,7 @@ logging.disable(logging.CRITICAL)
 urllib3.disable_warnings()
 
 
-WAIT_AFTER_SYNC = 5
+WAIT_AFTER_SYNC = 10
 LOTR_GALAXY_PATH = 'test-files/lotr-galaxy-cluster.json'
 LOTR_GALAXY_SG_PATH = 'test-files/lotr-galaxy-cluster-sharinggroup.json'
 LOTR_TEST_CLUSTER_PATH = 'test-files/lotr-test-cluster.json'
@@ -996,7 +996,7 @@ class TestClusterSync(ClusterUtility):
             self.import_lotr_galaxies(source.org_admin_connector)
             dest.site_admin_connector.update_server({'push_galaxy_clusters': False}, source.synchronisations[dest.name].id) # Avoid further propagation
             source.site_admin_connector.server_push(source.synchronisations[dest.name], 'full')
-            time.sleep(WAIT_AFTER_SYNC)
+            time.sleep(2*WAIT_AFTER_SYNC)
 
             clusters = self.get_clusters(source.org_admin_connector)
             pushed_clusters = self.get_clusters(dest.org_admin_connector)
