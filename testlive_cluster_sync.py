@@ -192,7 +192,7 @@ class ClusterUtility(unittest.TestCase):
         uuid = lotr_event_dict['Event']['uuid']
         relative_path = f'events/delete/{uuid}'
         instance.direct_call(relative_path, {})
-        relative_path = 'eventBlacklists/massDelete'
+        relative_path = 'eventBlocklists/massDelete'
         data = {
             'ids': str([x for x in range(1000)])
         }
@@ -657,7 +657,7 @@ class TestClusterCRUD(ClusterUtility):
             misp_central.org_admin_connector.direct_call(relative_path, data={})
             cluster = self.get_cluster(misp_central.org_admin_connector, lotr_test_relation['GalaxyClusterRelation']['galaxy_cluster_uuid'])
             relation = self.find_relation_in_cluster(lotr_test_relation['GalaxyClusterRelation'], cluster['GalaxyCluster']['GalaxyClusterRelation'])
-            self.assertIs(relation, False)
+            self.assertIs(relation, False, msg='Relation should have been deleted')
         finally:
             pass
 
@@ -740,8 +740,8 @@ class TestClusterSync(ClusterUtility):
             self.assertEqual(added_cluster['GalaxyCluster']['uuid'], uuid)
             self.assertFalse(added_cluster['GalaxyCluster']['published'])
             self.assertFalse(added_cluster['GalaxyCluster']['locked'])
-            source.site_admin_connector.update_server({'push': True}, source.synchronisations[middle.name].id) # Allow further propagation
-            middle.site_admin_connector.update_server({'push': True}, middle.synchronisations[dest.name].id)
+            source.site_admin_connector.update_server({'push': True, 'push_galaxy_clusters': True}, source.synchronisations[middle.name].id) # Allow further propagation
+            middle.site_admin_connector.update_server({'push': True, 'push_galaxy_clusters': True}, middle.synchronisations[dest.name].id)
 
             published_cluster = self.publish_cluster(source.org_admin_connector, uuid, fetch_cluster=True)
             self.assertTrue(published_cluster['GalaxyCluster']['published'])
@@ -773,7 +773,7 @@ class TestClusterSync(ClusterUtility):
             modified_cluster_middle = self.get_cluster(middle.org_admin_connector, uuid)
             self.assertEqual(modified_cluster_middle['GalaxyCluster']['description'], modifiedText, 'The site admin should have been able to modify the cluster')
             self.assertFalse(modified_cluster_middle['GalaxyCluster']['published'], 'Cluster should be unpublished')
-            middle.site_admin_connector.update_server({'push': True}, middle.synchronisations[source.name].id)
+            middle.site_admin_connector.update_server({'push': True, 'push_galaxy_clusters': True}, middle.synchronisations[source.name].id)
 
             self.publish_cluster(middle.org_admin_connector, uuid)
             time.sleep(WAIT_AFTER_SYNC)
@@ -790,9 +790,9 @@ class TestClusterSync(ClusterUtility):
             self.assertEqual(pushed_cluster_dest['GalaxyCluster']['description'], modifiedText, 'The description should have been updated on the destination server as it is locked')
             self.assertNotEqual(pushed_cluster_source['GalaxyCluster']['description'], modifiedText, 'The description should not have been updated on the destination server as it is not locked')
         finally:
-            source.site_admin_connector.update_server({'push': False}, source.synchronisations[middle.name].id)
-            middle.site_admin_connector.update_server({'push': False}, middle.synchronisations[dest.name].id)
-            middle.site_admin_connector.update_server({'push': False}, middle.synchronisations[source.name].id)
+            source.site_admin_connector.update_server({'push': False, 'push_galaxy_clusters': False}, source.synchronisations[middle.name].id)
+            middle.site_admin_connector.update_server({'push': False, 'push_galaxy_clusters': False}, middle.synchronisations[dest.name].id)
+            middle.site_admin_connector.update_server({'push': False, 'push_galaxy_clusters': False}, middle.synchronisations[source.name].id)
             self.wipe_all()
 
     def test_02_sharing_group_publish(self):
@@ -806,7 +806,7 @@ class TestClusterSync(ClusterUtility):
                 'central': self.misp_instances.central_node
             }
             for _, instance in instances_to_check.items():
-                node1.site_admin_connector.update_server({'push': True}, node1.synchronisations[instance.name].id)
+                node1.site_admin_connector.update_server({'push': True, 'push_galaxy_clusters': True}, node1.synchronisations[instance.name].id)
             sharinggroups = self.setup_sharinggroup_env()
 
             # Needed to create the container galaxy
@@ -838,7 +838,7 @@ class TestClusterSync(ClusterUtility):
                         self.compare_cluster(cluster, pushed_cluster, mirrorCheck=False, isPush=True)
         finally:
             for _, instance in instances_to_check.items():
-                node1.site_admin_connector.update_server({'push': False}, node1.synchronisations[instance.name].id)
+                node1.site_admin_connector.update_server({'push': False, 'push_galaxy_clusters': False}, node1.synchronisations[instance.name].id)
             self.wipe_lotr_galaxies(self.misp_instances.central_node.site_admin_connector)
             for instance in self.misp_instances.instances:
                 self.wipe_lotr_galaxies(instance.site_admin_connector)
@@ -994,6 +994,7 @@ class TestClusterSync(ClusterUtility):
             dest = self.misp_instances.instances[1]
             '''Test galaxy_cluster push all - Push all accessible-published-custom clusters before the events'''
             self.import_lotr_galaxies(source.org_admin_connector)
+            source.site_admin_connector.update_server({'push': True, 'push_galaxy_clusters': True}, source.synchronisations[dest.name].id)
             dest.site_admin_connector.update_server({'push_galaxy_clusters': False}, source.synchronisations[dest.name].id) # Avoid further propagation
             source.site_admin_connector.server_push(source.synchronisations[dest.name], 'full')
             time.sleep(2*WAIT_AFTER_SYNC)
@@ -1007,6 +1008,7 @@ class TestClusterSync(ClusterUtility):
                 self.check_after_sync(cluster, pushed_cluster, isPush=True)
                 self.compare_cluster(cluster, pushed_cluster, mirrorCheck=False, isPush=True)
         finally:
+            source.site_admin_connector.update_server({'push': False, 'push_galaxy_clusters': False}, source.synchronisations[dest.name].id)
             dest.site_admin_connector.update_server({'push_galaxy_clusters': True}, source.synchronisations[dest.name].id)
             self.wipe_lotr_galaxies(source.site_admin_connector)
             self.wipe_lotr_galaxies(dest.site_admin_connector)
@@ -1024,6 +1026,7 @@ class TestClusterSync(ClusterUtility):
             lotr_event = source.site_admin_connector.get_event(lotr_event_disk['Event']['uuid'])
             source.site_admin_connector.toggle_global_pythonify()
 
+            source.site_admin_connector.update_server({'push': True, 'push_galaxy_clusters': True}, source.synchronisations[dest.name].id)
             dest.site_admin_connector.update_server({'push_galaxy_clusters': False}, source.synchronisations[dest.name].id) # Avoid further propagation
             source.site_admin_connector.server_push(source.synchronisations[dest.name], lotr_event['Event']['id'])
             time.sleep(WAIT_AFTER_SYNC)
@@ -1041,6 +1044,7 @@ class TestClusterSync(ClusterUtility):
                 self.compare_cluster(cluster, pushed_cluster, mirrorCheck=False, isPush=True)
 
         finally:
+            source.site_admin_connector.update_server({'push': False, 'push_galaxy_clusters': False}, source.synchronisations[dest.name].id)
             dest.site_admin_connector.update_server({'push_galaxy_clusters': True}, source.synchronisations[dest.name].id)
             self.delete_lotr_event(source.site_admin_connector)
             self.wipe_lotr_galaxies(source.site_admin_connector)
